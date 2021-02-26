@@ -1,0 +1,178 @@
+{% extends 'base.html' %}
+{% block link %}
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery.bootstrapvalidator/0.5.0/css/bootstrapValidator.min.css">
+{%endblock%}
+
+{%block content %}
+<section id="main-content">
+	<section class="wrapper">
+    <div class="container">
+        <form class="well form-horizontal"   id="contact_form">
+            <fieldset>
+        
+                <!-- Form Name -->
+                <legend><center><h2><b>Add User</b></h2></center></legend><br>
+        
+                    <!-- Text input-->
+        
+                    <div class="form-group">
+                        <label class="col-md-4 control-label">First Name</label>  
+                        <div class="col-md-4 inputGroupContainer">
+                            <div class="input-group">
+                                <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+                                <input  name="first_name" id="first_name" placeholder="first name" class="form-control"  type="text">
+                            </div>
+                        </div>
+                    </div>
+        
+                    <!-- Text input-->
+        
+                    <div class="form-group">
+                        <label class="col-md-4 control-label" >Last Name</label> 
+                        <div class="col-md-4 inputGroupContainer">
+                            <div class="input-group">
+                                <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+                                <input name="last_name" id="last_name" placeholder="last name" class="form-control"  type="text">
+                            </div>
+                        </div>
+                    </div>
+        
+                    <!-- Text input-->
+                    
+                    <div class="form-group">
+                        <label class="col-md-4 control-label">Username</label>  
+                        <div class="col-md-4 inputGroupContainer">
+                            <div class="input-group">
+                                <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+                                <input  name="user_name" id="username" placeholder="username" class="form-control"  type="text">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-md-4 control-label">E-Mail</label>  
+                        <div class="col-md-4 inputGroupContainer">
+                            <div class="input-group">
+                                <span class="input-group-addon"><i class="glyphicon glyphicon-envelope"></i></span>
+                                <input name="email" id="email" placeholder="Email id" class="form-control"  type="text">
+                            </div>
+                        </div>
+                    </div>
+                
+            
+                    <!-- Text input-->
+            
+                    <div class="form-group">
+                        <label class="col-md-4 control-label">Contact No.</label>  
+                        <div class="col-md-4 inputGroupContainer">
+                            <div class="input-group">
+                                <span class="input-group-addon"><i class="glyphicon glyphicon-earphone"></i></span>
+                                <input name="contact_no" id="phone" placeholder="contact number" class="form-control" type="text">
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Text input-->
+                    
+                    <div class="form-group">
+                        <label class="col-md-4 control-label" >Password</label> 
+                        <div class="col-md-4 inputGroupContainer">
+                            <div class="input-group">
+                                <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+                                <input name="user_password" id="password1" placeholder="password" class="form-control"  type="password">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Text input-->
+        
+                    <div class="form-group">
+                        <label class="col-md-4 control-label" >Confirm Password</label> 
+                        <div class="col-md-4 inputGroupContainer">
+                            <div class="input-group">
+                                <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+                                <input name="confirm_password" id="password2" placeholder="confirm password" class="form-control"  type="password">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Text input-->
+                    
+                
+                    <!-- Button -->
+                    <div class="form-group">
+                        <label class="col-md-4 control-label"></label>
+                        <div class="col-md-4"><br>
+                            &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<span id="span" style="color: red; font-size: medium;"></span>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp <br>
+                            &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<button id="btn" type="button" class="btn btn-warning" >&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbspSUBMIT <span class="glyphicon glyphicon-send"></span>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</button>
+                        </div>
+                    </div>
+        
+            </fieldset>
+        </form>
+    </div><!-- /.container -->
+</section>    
+</section>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script> 
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-validator/0.4.5/js/bootstrapvalidator.min.js"></script>
+    <script>
+        $('#btn').click(function(){
+            var first_name = $('#first_name').val()
+            var last_name = $('#last_name').val()
+            var username = $('#username').val()
+            var email = $('#email').val()
+            var phone = $('#phone').val()
+            var password1 = $('#password1').val()
+            var password2 = $('#password2').val()
+            var atposition=email.indexOf("@");  
+            var dotposition=email.lastIndexOf("."); 
+            data = {
+                'csrfmiddlewaretoken':'{{csrf_token}}',
+                'first_name':first_name,
+                'last_name':last_name,
+                'username':username,
+                'email':email,
+                'phone':phone,
+                'password':password1
+            }
+            if(first_name.length<4){
+                $("#span").html('Enter a valid first name')
+            }else if(last_name.length<4){
+                $("#span").html('Enter a valid last name')
+            }else if(username.length<4){
+                $("#span").html('Enter a valid username')
+            }else if(atposition<1 || dotposition<atposition+2 || dotposition+2>=email.length){
+                $("#span").html('Enter a valid Email id')
+            }else if(isNaN(phone)||phone.length!=10){
+                $("#span").html('Enter a valid contact number')
+            }else if(password1.length<1){
+                $("#span").html('Enter the password')
+            }else if(password2.length<1){
+                $("#span").html('Enter the password to confirm')
+            }else if(password1!=password2){
+                $("#span").html('confirm the passwords')
+            }else{
+                    $.ajax({
+                        url:'/admin/adduser/',
+                        method:'POST',
+                        data:data,
+                        dataType:'json',
+                        success:function(data){
+                            if(data=='true'){
+                                window.location.replace('/admin/viewuser/')
+                            }
+                            if(data=='email'){
+                                $("#span").html('Email is already taken. Please enter another one.')
+                            }
+                            if(data=='user'){
+                                $("#span").html('Username is already taken. Please enter another one.')
+                            }
+                        }
+                    })
+            }
+            
+        })
+    </script>
+{%endblock%}

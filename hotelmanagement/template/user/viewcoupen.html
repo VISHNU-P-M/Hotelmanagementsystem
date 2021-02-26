@@ -1,0 +1,284 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User</title>
+
+
+    <link href="//fonts.googleapis.com/css?family=Spartan:400,500,600,700,900&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+    <link rel="stylesheet" href="{% static 'assets/css/style-starter.css' %}">
+    <link rel="stylesheet" href="path/to/font-awesome/css/font-awesome.min.css">
+</head>
+<body>
+    <style>
+        @import url('https://fonts.googleapis.com/css?family=Oswald');
+        *
+        {
+        margin: 0;
+        padding: 0;
+        border: 0;
+        box-sizing: border-box
+        }
+
+        body
+        {
+        background-color: #dadde6;
+        font-family: arial
+        }
+
+        .fl-left{float: left}
+
+        .fl-right{float: right}
+
+        .container
+        {
+        width: 90%;
+        margin: 100px auto
+        }
+
+        h1
+        {
+        text-transform: uppercase;
+        font-weight: 900;
+        border-left: 10px solid #fec500;
+        padding-left: 10px;
+        margin-bottom: 30px
+        }
+
+        .row{overflow: hidden}
+
+        .card
+        {
+        display: table-row;
+        width: 49%;
+        background-color: #fff;
+        color: #989898;
+        margin-bottom: 10px;
+        font-family: 'Oswald', sans-serif;
+        border-radius: 4px;
+        position: relative
+        }
+
+        .card + .card{margin-left: 2%}
+
+        .date
+        {
+        display: table-cell;
+        width: 25%;
+        position: relative;
+        text-align: center;
+        border-right: 2px dashed #dadde6
+        }
+
+        .date:before,
+        .date:after
+        {
+        content: "";
+        display: block;
+        width: 30px;
+        height: 30px;
+        background-color: #DADDE6;
+        position: absolute;
+        top: -15px ;
+        right: -15px;
+        z-index: 1;
+        border-radius: 50%
+        }
+
+        .date:after
+        {
+        top: auto;
+        bottom: -15px
+        }
+
+        .date time
+        {
+        display: block;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        -webkit-transform: translate(-50%, -50%);
+        -ms-transform: translate(-50%, -50%);
+        transform: translate(-50%, -50%)
+        }
+
+        .date time span{display: block}
+
+        .date time span:first-child
+        {
+        color: #2b2b2b;
+        font-weight: 600;
+        font-size: 250%
+        }
+
+        .date time span:last-child
+        {
+        text-transform: uppercase;
+        font-size: 15px;
+        margin-top: -10px
+        }
+
+        .card-cont
+        {
+        display: table-cell;
+        width: 75%;
+        font-size: 85%;
+        padding: 10px 10px 30px 50px
+        }
+
+        .card-cont h3
+        {
+        color: #3C3C3C;
+        font-size: 130%
+        }
+
+        .row:last-child .card:last-of-type .card-cont h3
+        {
+        text-decoration: line-through
+        }
+
+        .card-cont > div
+        {
+        display: table-row
+        }
+
+        .card-cont .even-date i,
+        .card-cont .even-info i,
+        .card-cont .even-date time,
+        .card-cont .even-info p
+        {
+        display: table-cell
+        }
+
+        .card-cont .even-date i,
+        .card-cont .even-info i
+        {
+        padding: 5% 5% 0 0
+        }
+
+        .card-cont .even-info p
+        {
+        padding: 30px 50px 0 0
+        }
+
+        .card-cont .even-date time span
+        {
+        display: block
+        }
+
+        .card-cont a
+        {
+        display: block;
+        text-decoration: none;
+        width: 80px;
+        height: 30px;
+        background-color: #D8DDE0;
+        color: #fff;
+        text-align: center;
+        line-height: 30px;
+        border-radius: 2px;
+        position: absolute;
+        right: 10px;
+        bottom: 10px
+        }
+
+        .row:last-child .card:first-child .card-cont a
+        {
+        background-color: #037FDD
+        }
+
+        .row:last-child .card:last-child .card-cont a
+        {
+        background-color: #F8504C
+        }
+
+        @media screen and (max-width: 860px)
+        {
+        .card
+        {
+            display: block;
+            float: none;
+            width: 100%;
+            margin-bottom: 10px
+        }
+        
+        .card + .card{margin-left: 0}
+        
+        .card-cont .even-date,
+        .card-cont .even-info
+        {
+            font-size: 75%
+        }
+        }
+    </style>
+    <header class="w3l-header-nav">
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+              <a class="navbar-brand" href='/'>
+                <img src="https://cdn2.iconfinder.com/data/icons/social-media-flat-line/70/user-512.png" style="height:60px;    color: #d63447; font-weight: 700; font-size: 30px; letter-spacing: -1px; padding: 0; display: grid;  grid-template-columns: auto auto;grid-gap: 10px; margin: 0;" >
+              </a>
+              <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+              <span class="navbar-toggler-icon"></span>
+              </button>
+              
+              <div class="collapse navbar-collapse ml-auto" id="navbarSupportedContent">
+                  <ul class="navbar-nav ml-auto">
+                  <li class="nav-item active my-auto">
+                      <a class="nav-link" style="color: #d63447;  margin-left: 3rem; font-size: 20px;margin-top: auto;" href="/">Home <span class="sr-only">(current)</span></a>
+                  </li>
+                  <li class="nav-item my-auto">
+                      <a class="nav-link" style="color: #d63447;  margin-left: 3rem; font-size: 20px;margin-top: auto;" href='/logout/'>Log-out</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" style="color: #d63447;  margin-left: 3rem; font-size: 20px;margin-top: auto;" href="/history/">Booking History</a>
+                  </li>
+                  </ul>
+              </div>
+          </nav>
+        
+    </header>
+    <section class="container">
+        <h1>Coupons</h1>
+          <div class="row">
+            {% if coupen.used == False %}
+            <article class="card fl-left">
+            <section class="date">
+                <time datetime="23th feb">
+                  <span>{{coupen.start}} to {{coupen.end}}</span>
+                </time>
+            </section>
+              <section class="card-cont">
+                <small>Live Hotel</small>
+                <h3>{{coupen.coupen_name}}</h3>
+                <div class="even-date">
+                    <i class="fa fa-money" aria-hidden="true"></i>
+                 <time>
+                   <span>Special Offer</span>
+                   <span>Coupen</span>
+                 </time>
+                </div>
+                <div class="even-info">
+                    <i class="fa fa-code" aria-hidden="true"></i>
+                  <p style="font-size: 18px; color: #13b113; text-decoration: unset;" >
+                    {{coupen.code}}
+                  </p>
+                </div>
+                <small>apply and get {{coupen.percent}}% off</small>
+              </section>
+            </article>
+            {% endif %}
+          </div>
+  
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW" crossorigin="anonymous"></script>
+
+    <script src="{% static 'assets/js/owl.carousel.js'%}"></script>
+    <script src="{% static 'assets/js/jquery-3.3.1.min.js'%}"></script>
+<script src="{% static 'assets/js/bootstrap.min.js'%}"></script>
+<script src="{% static 'assets/js/owl.carousel.js'%}"></script>
+
+</body>
+</html>

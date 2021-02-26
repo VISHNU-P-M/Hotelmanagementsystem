@@ -1,0 +1,473 @@
+{% extends 'base.html' %}
+{% block link %}
+<!-- <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.0.0/cropper.min.css" integrity="sha256-FeDcPwV8ZgxG1MU5L/b2i8clOmqZJKK0eyDHqrQaXxY=" crossorigin="anonymous" /> -->
+<link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.0.0/cropper.min.css" integrity="sha256-FeDcPwV8ZgxG1MU5L/b2i8clOmqZJKK0eyDHqrQaXxY=" crossorigin="anonymous" />
+
+<style>
+    /* Chrome, Safari, Edge, Opera */
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+    
+    /* Firefox */
+    input[type=number] {
+      -moz-appearance: textfield;
+    }
+    </style>
+{%endblock%}
+
+{%block content %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+
+
+
+    <style>
+        body{
+            background: -webkit-linear-gradient(left, #0072ff, #00c6ff);
+        }
+        .contact-form{
+            background: #fff;
+            margin-top: 10%;
+            margin-bottom: 5%;
+        }
+        .contact-form .form-control{
+            border-radius:1rem;
+        }
+        .contact-image{
+            text-align: center;
+        }
+        .contact-image img{
+            width: 11%;
+            margin-top: 2%;
+        }
+        .contact-form form{
+            padding: 14%;
+        }
+        .contact-form form .row{
+            margin-bottom: -7%;
+        }
+        .contact-form h3{
+            margin-bottom: 8%;
+            margin-top: -10%;
+            text-align: center;
+            color: #0062cc;
+        }
+        .contact-form .btnContact {
+            width: 50%;
+            border: none;
+            border-radius: 1rem;
+            padding: 1.5%;
+            background: #dc3545;
+            font-weight: 600;
+            color: #fff;
+            cursor: pointer;
+        }
+        .btnContactSubmit
+        {
+            width: 50%;
+            border-radius: 1rem;
+            padding: 1.5%;
+            color: #fff;
+            background-color: #0062cc;
+            border: none;
+            cursor: pointer;
+        }
+        .text{
+            text-align: center;
+            color: #0062cc;
+        }
+        #overflowTest {
+            color: black;
+            height: 200px;
+            overflow: auto;
+            border: .5px solid #ccc;
+            }
+    </style>
+    <section id="main-content">
+        <section class="wrapper">
+            <div class="container contact-form">
+                <div class="contact-image">
+                    <img src="https://cdn.iconscout.com/icon/premium/png-512-thumb/available-room-1-501679.png" alt="rocket_contact"/>
+                </div>
+                <form method="post" action="/admin/editoverview/{{room.id}}" enctype="multipart/form-data">
+                    {% csrf_token %} 
+                    <h3>Add Room</h3>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label for="category" class="text">Category:</label>
+                            <div class="form-group">
+                                <div class="form-check form-check-inline">
+                                    <select aria-readonly="true" name="category" id="category">
+                                        {% for category in categories %}
+                                            {% if category.category == room.category.category %}
+                                                <option value="{{category.id}}" selected >{{category.category}}</option>
+                                            {% endif %}
+                                        {% endfor %}
+                                      </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="room_no" class="text">No. of Rooms</label>
+                                <input type="number" name="room_no" class="form-control" min="3" id="room_no" value="{{room.rooms}}" required='true' />
+                            </div>
+                            <label for="Amenities" class="text">Amenities</label>
+                            <div class="form-group">
+                                <div class="form-check form-check-inline">
+                                    {%for i in amenities%}
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="checkbox"  name="name" value="{{i.id}}" {% if i.amenities in setamenities_list %} checked {% endif %}>
+                                            <label class="form-check-label" for="inlineCheckbox1" style="font-size: 18px; color: #b93a7b;">{{i.amenities}}</label>
+                                        </div>
+                                    {%endfor%}
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="room_no" class="text">Price:</label>
+                                <input type="number" name="price" class="form-control" id="price" value="{{room.price}}" required />
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="room_no" class="text">Description:</label>
+                            <div class="form-group">
+                                <textarea name="description" id="textarea" class="form-control" values placeholder="Your Message *" style="width: 100%; height: 150px;"  required>{{room.description}}</textarea>
+                            </div>
+                                <div class="col-md-3">
+                                    <label for="room_no" class="text">Images:</label>
+                                    <div class="form-group">
+                                        <input type="file" id="img1" name="img1" hidden  onchange="readURL1(this)">
+                                        <img id="image1" style="width: 200;height: 200;" src="" alt="">
+                                        <input type="file"  name="img1url" id="img1url"  hidden>
+                                        <div id="crop1">
+                                            <img src="{{room.pic1.url}}" id="pic1" style="width: 5rem;" alt="">
+                                        </div>
+                                        <button type="button" id="crop_button1" style="visibility: hidden;">Crop</button> 
+                                    </div>
+                                    <div class="form-group">
+                                        <input type="file" id="img2" name="img2" hidden  onchange="readURL2(this)">
+                                        <img id="image2" style="width: 200;height: 200;" src="" alt="">
+                                        <input type="file"  name="img2url" id="img2url"  hidden>
+                                        <div id="crop2">
+                                            <img src="{{room.pic2.url}}" id="pic2" style="width: 5rem;" alt="">
+                                        </div>
+                                        <button type="button" id="crop_button2" style="visibility: hidden;">Crop</button> 
+                                    </div> 
+                                    <div class="form-group">
+                                        <input type="file" id="img3" name="img3" hidden  onchange="readURL3(this)">
+                                        <img id="image3" style="width: 200;height: 200;" src="" alt="">
+                                        <input type="file"  name="img3url" id="img3url"  hidden>
+                                        <div id="crop3">
+                                            <img src="{{room.pic3.url}}" id="pic3" style="width: 5rem;" alt="">
+                                        </div>
+                                        <button type="button" id="crop_button3" style="visibility: hidden;">Crop</button> 
+                                    </div> 
+                                    <div class="form-group">
+                                        <input type="file" id="img4" name="img4" hidden  onchange="readURL4(this)">
+                                        <img id="image4" style="width: 200;height: 200;" src="" alt="">
+                                        <input type="file"  name="img4url" id="img4url"  hidden>
+                                        <div id="crop4">
+                                            <img src="{{room.pic4.url}}" id="pic4" style="width: 5rem;" alt="">
+                                        </div>
+                                        <button type="button" id="crop_button4" style="visibility: hidden;">Crop</button> 
+                                    </div>     
+                                    <div class="form-group">
+                                        <input type="file" id="img5" name="img5" hidden  onchange="readURL5(this)">
+                                        <img id="image5" style="width: 200;height: 200;" src="" alt="">
+                                        <input type="file"  name="img5url" id="img5url"  hidden>
+                                        <div id="crop5">
+                                            <img src="{{room.pic5.url}}" id="pic5" style="width: 5rem;" alt="">
+                                        </div>
+                                        <button type="button" id="crop_button5" style="visibility: hidden;">Crop</button> 
+                                    </div>
+                                    <div class="form-group">
+                                        <input type="file" id="img6" name="img6" hidden  onchange="readURL6(this)">
+                                        <img id="image6" style="width: 200;height: 200;" src="" alt="">
+                                        <input type="file"  name="img6url" id="img6url"  hidden>
+                                        <div id="crop6">
+                                            <img src="{{room.pic6.url}}" id="pic6" style="width: 5rem;" alt="">
+                                        </div>
+                                        <button type="button" id="crop_button6" style="visibility: hidden;">Crop</button> 
+                                    </div>
+                                    
+                                    
+                                    
+                                    
+                                </div>
+                            </div>
+                        </div>
+                        <input type="submit" class="btn btn-primary" value="Apply edits">
+                    </div>
+                </form>
+                {% for message in messages %}
+                    {{message}}
+                {% endfor %} <br>
+            </div>
+        </section>
+    </section>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.0.0/cropper.min.js"></script>
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+    <!-- <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script> 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.0.0/cropper.min.js"></script> -->
+    <script>
+        $('#pic1').click(function(){
+            $('#img1').click()
+        })
+        function readURL1(input) {
+            if (input.files && input.files[0]) {
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                $('#pic1').attr('src', e.target.result)
+            };
+            reader.readAsDataURL(input.files[0]);
+            setTimeout(initCropper1, 1000);
+            $('#crop_button1').css({"visibility": "visible"})
+            }
+        }
+        function initCropper1(){
+            var image = document.getElementById('pic1');
+            var cropper = new Cropper(image, {
+            aspectRatio: 16 / 9,
+            crop: function(e) {
+                console.log(e.detail.x);
+                console.log(e.detail.y);
+            }
+            });
+        
+            // On crop button clicked
+                
+            document.getElementById('crop_button1').addEventListener('click', function(){
+            var imgurl =  cropper.getCroppedCanvas().toDataURL();
+            var img = document.createElement("img");
+            img.src = imgurl;
+            img.width="200";
+            img.height='100';
+            $('#crop_button1').css({"visibility": "hidden"})
+            $('#crop1').css({"visibility": "hidden"})
+            document.getElementById("image1").replaceWith(img)
+            
+            })
+        }
+    </script>
+    <script>
+        $('#pic2').click(function(){
+            $('#img2').click()
+        })
+        function readURL2(input) {
+            if (input.files && input.files[0]) {
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                $('#pic2').attr('src', e.target.result)
+            };
+            reader.readAsDataURL(input.files[0]);
+            setTimeout(initCropper2, 1000);
+            $('#crop_button2').css({"visibility": "visible"})
+            }
+        }
+        function initCropper2(){
+            var image = document.getElementById('pic2');
+            var cropper = new Cropper(image, {
+            aspectRatio: 16 / 9,
+            crop: function(e) {
+                console.log(e.detail.x);
+                console.log(e.detail.y);
+            }
+            });
+        
+            // On crop button clicked
+                
+            document.getElementById('crop_button2').addEventListener('click', function(){
+            var imgurl =  cropper.getCroppedCanvas().toDataURL();
+            var img = document.createElement("img");
+            img.src = imgurl;
+            img.width="200";
+            img.height='100';
+            $('#crop_button2').css({"visibility": "hidden"})
+            $('#crop2').css({"visibility": "hidden"})
+            document.getElementById("image2").replaceWith(img)
+            
+
+            //$('#img1url').val(imgurl) 
+            
+            })
+        }
+    </script>
+    <script>
+        $('#pic3').click(function(){
+            $('#img3').click()
+        })
+        function readURL3(input) {
+            if (input.files && input.files[0]) {
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                $('#pic3').attr('src', e.target.result)
+            };
+            reader.readAsDataURL(input.files[0]);
+            setTimeout(initCropper3, 1000);
+            $('#crop_button3').css({"visibility": "visible"})
+            }
+        }
+        function initCropper3(){
+            var image = document.getElementById('pic3');
+            var cropper = new Cropper(image, {
+            aspectRatio: 16 / 9,
+            crop: function(e) {
+                console.log(e.detail.x);
+                console.log(e.detail.y);
+            }
+            });
+        
+            // On crop button clicked
+                
+            document.getElementById('crop_button3').addEventListener('click', function(){
+            var imgurl =  cropper.getCroppedCanvas().toDataURL();
+            var img = document.createElement("img");
+            img.src = imgurl;
+            img.width="200";
+            img.height='100';
+            $('#crop_button3').css({"visibility": "hidden"})
+            $('#crop3').css({"visibility": "hidden"})
+            document.getElementById("image3").replaceWith(img)
+            
+
+            //$('#img1url').val(imgurl) 
+            
+            })
+        }
+    </script>
+    <script>
+        $('#pic4').click(function(){
+            $('#img4').click()
+        })
+        function readURL4(input) {
+            if (input.files && input.files[0]) {
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                $('#pic4').attr('src', e.target.result)
+            };
+            reader.readAsDataURL(input.files[0]);
+            setTimeout(initCropper4, 1000);
+            $('#crop_button4').css({"visibility": "visible"})
+            }
+        }
+        function initCropper4(){
+            var image = document.getElementById('pic4');
+            var cropper = new Cropper(image, {
+            aspectRatio: 16 / 9,
+            crop: function(e) {
+                console.log(e.detail.x);
+                console.log(e.detail.y);
+            }
+            });
+        
+            // On crop button clicked
+                
+            document.getElementById('crop_button4').addEventListener('click', function(){
+            var imgurl =  cropper.getCroppedCanvas().toDataURL();
+            var img = document.createElement("img");
+            img.src = imgurl;
+            img.width="200";
+            img.height='100';
+            $('#crop_button4').css({"visibility": "hidden"})
+            $('#crop4').css({"visibility": "hidden"})
+            document.getElementById("image4").replaceWith(img)
+            
+
+            //$('#img1url').val(imgurl) 
+            
+            })
+        }
+    </script>
+    <script>
+        $('#pic5').click(function(){
+            $('#img5').click()
+        })
+        function readURL5(input) {
+            if (input.files && input.files[0]) {
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                $('#pic5').attr('src', e.target.result)
+            };
+            reader.readAsDataURL(input.files[0]);
+            setTimeout(initCropper5, 1000);
+            $('#crop_button5').css({"visibility": "visible"})
+            }
+        }
+        function initCropper5(){
+            var image = document.getElementById('pic5');
+            var cropper = new Cropper(image, {
+            aspectRatio: 16 / 9,
+            crop: function(e) {
+                console.log(e.detail.x);
+                console.log(e.detail.y);
+            }
+            });
+        
+            // On crop button clicked
+                
+            document.getElementById('crop_button5').addEventListener('click', function(){
+            var imgurl =  cropper.getCroppedCanvas().toDataURL();
+            var img = document.createElement("img");
+            img.src = imgurl;
+            img.width="200";
+            img.height='100';
+            $('#crop_button5').css({"visibility": "hidden"})
+            $('#crop5').css({"visibility": "hidden"})
+            document.getElementById("image5").replaceWith(img)
+            
+
+            //$('#img1url').val(imgurl) 
+            
+            })
+        }
+    </script>
+    <script>
+        $('#pic6').click(function(){
+            $('#img6').click()
+        })
+        function readURL6(input) {
+            if (input.files && input.files[0]) {
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                $('#pic6').attr('src', e.target.result)
+            };
+            reader.readAsDataURL(input.files[0]);
+            setTimeout(initCropper6, 1000);
+            $('#crop_button6').css({"visibility": "visible"})
+            }
+        }
+        function initCropper6(){
+            var image = document.getElementById('pic6');
+            var cropper = new Cropper(image, {
+            aspectRatio: 16 / 9,
+            crop: function(e) {
+                console.log(e.detail.x);
+                console.log(e.detail.y);
+            }
+            });
+        
+            // On crop button clicked
+                
+            document.getElementById('crop_button6').addEventListener('click', function(){
+            var imgurl =  cropper.getCroppedCanvas().toDataURL();
+            var img = document.createElement("img");
+            img.src = imgurl;
+            img.width="200";
+            img.height='100';
+            $('#crop_button6').css({"visibility": "hidden"})
+            $('#crop6').css({"visibility": "hidden"})
+            document.getElementById("image6").replaceWith(img)
+            
+
+            //$('#img1url').val(imgurl) 
+            
+            })
+        }
+    </script>
+{%endblock%}

@@ -1,0 +1,85 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User</title>
+
+
+    <link href="//fonts.googleapis.com/css?family=Spartan:400,500,600,700,900&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+    <link rel="stylesheet" href="{% static 'assets/css/style-starter.css' %}">
+    <link rel="stylesheet" href="path/to/font-awesome/css/font-awesome.min.css">
+</head>
+<body>
+    <header class="w3l-header-nav">
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+              <a class="navbar-brand" href='/'>
+                <img src="https://cdn2.iconfinder.com/data/icons/social-media-flat-line/70/user-512.png" style="height:60px;    color: #d63447; font-weight: 700; font-size: 30px; letter-spacing: -1px; padding: 0; display: grid;  grid-template-columns: auto auto;grid-gap: 10px; margin: 0;" >
+              </a>
+              <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+              <span class="navbar-toggler-icon"></span>
+              </button>
+              
+              <div class="collapse navbar-collapse ml-auto" id="navbarSupportedContent">
+                  <ul class="navbar-nav ml-auto">
+                  <li class="nav-item active my-auto">
+                      <a class="nav-link" style="color: #d63447;  margin-left: 3rem; font-size: 20px;margin-top: auto;" href="/">Home <span class="sr-only">(current)</span></a>
+                  </li>
+                  <li class="nav-item my-auto">
+                      <a class="nav-link" style="color: #d63447;  margin-left: 3rem; font-size: 20px;margin-top: auto;" href='/logout/'>Log-out</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" style="color: #d63447;  margin-left: 3rem; font-size: 20px;margin-top: auto;" href="/history/">Booking History</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" style="color: #d63447;  margin-left: 3rem; font-size: 20px;margin-top: auto;" href="/coupen/"><i class="fa fa-money" aria-hidden="true"></i></a>
+                  </li>
+                  </ul>
+              </div>
+          </nav>
+        
+    </header>
+    <div class="best-rooms py-5">
+        <div class="container page-top">
+            <div class="dfle">
+                <label for="gallery" class="d-flex justify-content-center" style="color: #000; font-size: 28px;  line-height: 32px;  text-transform: uppercase; margin-bottom: 50px;font-weight: 600;  align-items: center; position: relative;">Rooms</label>
+            </div>
+            <div class="row">
+              <label for="" style="font-size: 25px; font-family: -webkit-body; color: brown;">{{category.category}}</label>
+                  <div class="col-lg-12  col-md-12 col-xs-12 thumb">
+                    <div class="float-left col-lg-6">
+                      <a href="/specificroom/{{room.id}}" class="fancybox" rel="ligthbox">
+                        <img  src="{{room.pic1.url}}" class="zoom img-fluid "  alt="">
+                      </a>
+                      <label style="font-family: fantasy; font-size: 20px; color: initial; margin-top: 25px;" for="price">₹ {{room.price}}</label><br>
+                      <a href="/specificroom/{{room.id}}"><button type="button" class="btn btn-success">Book Now</button></a>
+                    </div>
+                    <div class="float-right col-lg-6">
+                      <h6>About: <br></h6><p>{{room.description}}</p><br>
+                      <h6>Amenities:</h6>
+                      <p>
+                        {% for am in setamenities %}
+                          {% if am.room_id == room.id %}
+                            {{am.amenities.amenities}} &nbsp;
+                          {%endif%}
+                        {%endfor%}
+                      </p>
+                    </div>
+                  </div>
+            </div>
+        </div> 
+    </div>
+  
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW" crossorigin="anonymous"></script>
+
+    <script src="{% static 'assets/js/owl.carousel.js'%}"></script>
+    <script src="{% static 'assets/js/jquery-3.3.1.min.js'%}"></script>
+<script src="{% static 'assets/js/bootstrap.min.js'%}"></script>
+<script src="{% static 'assets/js/owl.carousel.js'%}"></script>
+
+</body>
+</html>

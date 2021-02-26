@@ -1,0 +1,35 @@
+{% extends 'basereception.html' %}
+{% block link %}
+{% endblock %}
+{% block content %}
+<section id="main-content">
+    <section class="wrapper">
+        <div class="container mt-1 " style="overflow-x:auto;">
+            
+            <table border="5" class="table table-dark" style="margin-top: 2rem;">
+                <tbody>
+                {% for category in categories%}
+                <tr>
+                    {% for room in rooms %}
+                        {% if room.category.category == category.category %}
+                            {%if room.booked == True %}
+                                <td style="background-color: red; color: #000;">
+                                    {{room.category.category}}&nbsp;{{room.room_no}}
+                                </td>
+                            {%else%}
+                                <td style="background-color:rgb(5, 216, 5); color: #000;">
+                                    {{room.category.category}}&nbsp;{{room.room_no}}
+                                </td>
+                            {% endif %}
+                            
+                        {% endif %}
+                    {% endfor %}
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </section>
+</section>
+
+{% endblock %}

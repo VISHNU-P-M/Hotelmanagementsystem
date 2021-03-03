@@ -1,0 +1,543 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
+    <link rel="stylesheet" href="{% static 'assets/css/style-starter.css' %}">
+    <link rel="stylesheet" href="path/to/font-awesome/css/font-awesome.min.css">
+<body>
+    <style>
+        * {
+            margin: 0;
+            padding: 0
+        }
+        
+        html {
+            height: 100%
+        }
+        
+        body {
+            background-color: #000000
+        }
+        
+        .card0 {
+            margin: 40px 12px 15px 12px;
+            border: 0
+        }
+        
+        .card1 {
+            margin: 0;
+            padding: 15px;
+            padding-top: 25px;
+            padding-bottom: 0px;
+            background: #263238;
+            height: 100%
+        }
+        
+        .bill-head {
+            color: #ffffff;
+            font-weight: bold;
+            margin-bottom: 0px;
+            margin-top: 0px;
+            font-size: 30px
+        }
+        
+        .line {
+            border-right: 1px grey solid
+        }
+        
+        .bill-date {
+            color: #BDBDBD
+        }
+        
+        .red-bg {
+            margin-top: 25px;
+            margin-left: 0px;
+            margin-right: 0px;
+            background-color: #F44336;
+            padding-left: 20px !important;
+            padding: 25px 10px 25px 15px
+        }
+        
+        #total {
+            margin-top: 0px;
+            padding-left: 7px
+        }
+        
+        #total-label {
+            margin-bottom: 0px;
+            color: #ffffff;
+            padding-left: 7px
+        }
+        
+        #heading1 {
+            color: #ffffff;
+            font-size: 20px;
+            padding-left: 10px
+        }
+        
+        #heading2 {
+            font-size: 27px;
+            color: #D50000
+        }
+        
+        .placeicon {
+            font-family: fontawesome !important
+        }
+        
+        .card2 {
+            padding: 25px;
+            margin: 0;
+            height: 100%
+        }
+        
+        .form-card .pay {
+            font-weight: bold
+        }
+        
+        .form-card input,
+        .form-card textarea {
+            padding: 10px 8px 10px 8px;
+            border: none;
+            border: 1px solid lightgrey;
+            border-radius: 0px;
+            margin-bottom: 25px;
+            margin-top: 2px;
+            width: 100%;
+            box-sizing: border-box;
+            font-family: montserrat;
+            color: #2C3E50;
+            font-size: 14px;
+            letter-spacing: 1px
+        }
+        
+        .form-card input:focus,
+        .form-card textarea:focus {
+            -moz-box-shadow: none !important;
+            -webkit-box-shadow: none !important;
+            box-shadow: none !important;
+            border: none;
+            font-weight: bold;
+            border: 1px solid gray;
+            outline-width: 0
+        }
+        
+        .btn-info {
+            background-color: #f44336 !important
+        }
+        
+        .radio-group {
+            position: relative;
+            margin-bottom: 25px
+        }
+        
+        .radio {
+            display: inline-block;
+            width: 204;
+            height: 64;
+            border-radius: 0;
+            background: lightblue;
+            box-sizing: border-box;
+            border: 2px solid lightgrey;
+            cursor: pointer;
+            margin: 8px 25px 8px 0px
+        }
+        
+        .radio:hover {
+            box-shadow: 0px 0px 0px 1px rgba(0, 0, 0, 0.2)
+        }
+        
+        .radio.selected {
+            box-shadow: 0px 0px 0px 1px rgba(0, 0, 0, 0.4)
+        }
+        
+        .fit-image {
+            width: 100%;
+            object-fit: cover
+        }
+    </style>
+    <header class="w3l-header-nav">
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+              <a class="navbar-brand" href='/'>
+                <img src="https://cdn2.iconfinder.com/data/icons/social-media-flat-line/70/user-512.png" style="height:60px;    color: #d63447; font-weight: 700; font-size: 30px; letter-spacing: -1px; padding: 0; display: grid;  grid-template-columns: auto auto;grid-gap: 10px; margin: 0;" >
+              </a>
+              <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+              <span class="navbar-toggler-icon"></span>
+              </button>
+              
+              <div class="collapse navbar-collapse ml-auto" id="navbarSupportedContent">
+                  <ul class="navbar-nav ml-auto">
+                  <li class="nav-item active my-auto">
+                      <a class="nav-link" style="color: #d63447;  margin-left: 3rem; font-size: 20px;margin-top: auto;" href="/">Home <span class="sr-only">(current)</span></a>
+                  </li>
+                  <li class="nav-item my-auto">
+                      <a class="nav-link" style="color: #d63447;  margin-left: 3rem; font-size: 20px;margin-top: auto;" href='/logout/'>Log-out</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" style="color: #d63447;  margin-left: 3rem; font-size: 20px;margin-top: auto;" href="/history/">Booking History</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" style="color: #d63447;  margin-left: 3rem; font-size: 20px;margin-top: auto;" href="/coupen/"><i class="fa fa-money" aria-hidden="true"></i></a>
+                  </li>
+                  </ul>
+              </div>
+          </nav>
+        
+    </header>
+    <section>
+        <div class="container-fluid">
+            <div class="row justify-content-center">
+                <div class="col-12 col-lg-11">
+                    <div class="card card0 rounded-0">
+                        <div class="row" >
+                            <div class="col-md-8 d-md-block  p-0 box">
+                                <div class="card rounded-0 border-0 card1" id="bill">
+                                    <h3 id="heading1">Booking Summary</h3>
+                                    <div class="row">
+                                        <div class="col-lg-7 col-8 mt-4 line pl-4">
+                                            <h2 class="bill-head">Room no:</h2>
+                                        </div>
+                                        <div class="col-lg-5 col-4 mt-4">
+                                            <h2 class="bill-head px-xl-5 px-lg-4">
+                                                {% for no in room_no %}
+                                                {{no}}&nbsp;
+                                                {% endfor %}
+                                            </h2>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-lg-7 col-8 mt-4 line pl-4">
+                                            <h2 class="bill-head">Category</h2>
+                                        </div>
+                                        <div class="col-lg-5 col-4 mt-4">
+                                            <h2 class="bill-head px-xl-5 px-lg-4">{{room.category.category}}</h2>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-lg-7 col-8 mt-4 line pl-4">
+                                            <h2 class="bill-head">Check-in</h2>
+                                        </div>
+                                        <div class="col-lg-5 col-4 mt-4">
+                                            <h2 class="bill-head px-xl-5 px-lg-4">{{check_in}}</h2>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-lg-7 col-8 mt-4 line pl-4">
+                                            <h2 class="bill-head">Check-out</h2>
+                                        </div>
+                                        <div class="col-lg-5 col-4 mt-4">
+                                            <h2 class="bill-head px-xl-5 px-lg-4">{{check_out}}</h2>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12 red-bg">
+                                            <p class="bill-date" id="total-label">Total Price</p>
+                                            <h2 class="bill-head" id="total">{{price}}</h2> <small class="bill-date" id="total-label">Price includes all taxes</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4 col-sm-12 p-0 box">
+                                <div class="card rounded-0 border-0 card2" id="paypage">
+                                    <form action="">
+                                        <div class="form-card">
+                                            <div class="row">
+                                                <select class="form-select" id="method" aria-label="Default select example" required style="background-color: #f44336; color: white;">
+                                                    <option selected value="0">Payment Method</option>
+                                                    <option value="cod">Pay at Hotel</option>
+                                                    <option value="paypal">Paypal</option>
+                                                    <option value="razorpay">Razorpay</option>
+                                                </select>
+                                            </div>
+                                            <div>
+                                                <span id="span" style="color: red;"></span>
+                                                {% if coupen_exist == True %}
+                                                {% if coupon.live == True %}
+                                                  <div class="form-group" onclick="coupen()" ><br>
+                                                    <label for="exampleInputEmail1">Apply Coupen</label><i class="fa fa-angle-double-down" aria-hidden="true"></i>
+                                                  </div>
+                                                  <div id="coupen_div" style="visibility: hidden;">
+                                                    <input type="text" name="check_coupen" id="check_coupen" placeholder="Enter the code">
+                                                    <button type="button" id="coupen_button">Apply code</button>
+                                                  </div>
+                                                  
+                                                  <br>
+                                                  {% endif %}
+                                                {% endif %}
+                                              </div>
+                                            <br><br>
+                                            <div class="row">
+                                                <div class="col-md-8"> <input type="button" id="btn" value="MAKE  PAYMENT &nbsp; &#xf178;" class="btn btn-info placeicon" style="color: white;"> </div>
+                                            </div><br>
+                                            <div  id="paypal-button-container"></div><br>
+                                            <div id="razor" class="razor"></div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js" integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script>
+    <script src="https://www.paypal.com/sdk/js?client-id=AU8oDlwiIDG8PdqjHD0lpawVq_PfqbpNQ49tbAM2wCZuEupUHz580bUCD9wRwZKJAldezFaw6aiNA18G&currency=USD"></script>
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <script src="{% static 'assets/js/bootstrap.min.js'%}"></script>
+    <script>
+        $('#btn').click(function(){
+            var price = '{{price}}'
+            var room_id = '{{room.id}}'
+            var method = $('#method').val()
+            var data = {
+                'csrfmiddlewaretoken':'{{csrf_token}}',
+                'room_id':room_id,
+                'price':price,
+                'method':method
+            }
+            if (method=='0'){
+                $('#span').html('Select payment method')
+            }else{
+                if(method=='cod'){
+                    console.log('cod')
+                    $.ajax({
+                        url:'/book/',
+                        method:'POST',
+                        data:data,
+                        dataTypes:'json',
+                        success:function(data){
+                            if (data=='true'){
+                                window.location.replace('/history/')
+                            }
+                            if(data=='false'){
+                                $('#span').html('Something wend wrong')
+                            }
+                            if(data=='room'){
+                                $('#span').html('Room not available')
+                            }
+                        }
+                    })
+                }else if(method=='paypal'){
+                    console.log('paypal')
+                    var price = '{{paypal_price}}'
+                    var total = parseInt(price)
+                    // Render the PayPal button into #paypal-button-container
+                    paypal.Buttons({
+                        
+                        style: {
+                            color:  'blue',
+                            shape:  'pill',
+                            label:  'pay',
+                            height: 40,
+                        },
+                        // Set up the transaction
+                        createOrder: function(data, actions) {
+                        
+                            return actions.order.create({
+                            purchase_units: [{
+                                amount: {
+                                    value: total
+                                }
+                                }]
+                            });
+                        },
+                
+                        // Finalize the transaction
+                        onApprove: function(data, actions) {
+                            return actions.order.capture().then(function(details) {
+                                alert('success paypal')
+                                $.ajax({
+                                    url:'/book/',
+                                    method:'POST',
+                                    data:data,
+                                    dataTypes:'json',
+                                    success:function(data){
+                                        if (data=='true'){
+                                            window.location.replace('/history/')
+                                        }
+                                        if(data=='false'){
+                                            $('#span').html('Something wend wrong')
+                                        }
+                                        if(data=='room'){
+                                            $('#span').html('Room not available')
+                                        }
+                                    }
+                                })
+                            });
+                        }
+                    }).render('#paypal-button-container');
+                }else if(method=='razorpay'){
+                    console.log('razorpay')
+                    razorpay()
+                }else{
+                    console.log('something wrong')
+                }
+            }
+        })
+    </script>
+    <script>
+        $(document).ready(function() {
+            $('.mdb-select').materialSelect();
+            });
+    </script>
+    <script>
+        $(document).ready(function(){
+
+            //For Card Number formatted input
+            var cardNum = document.getElementById('cr_no');
+            cardNum.onkeyup = function (e) {
+            if (this.value == this.lastValue) return;
+            var caretPosition = this.selectionStart;
+            var sanitizedValue = this.value.replace(/[^0-9]/gi, '');
+            var parts = [];
+            
+            for (var i = 0, len = sanitizedValue.length; i < len; i +=4) { parts.push(sanitizedValue.substring(i, i + 4)); } for (var i=caretPosition - 1; i>= 0; i--) {
+                var c = this.value[i];
+                if (c < '0' || c> '9') {
+                    caretPosition--;
+                    }
+                    }
+                    caretPosition += Math.floor(caretPosition / 4);
+            
+                    this.value = this.lastValue = parts.join('-');
+                    this.selectionStart = this.selectionEnd = caretPosition;
+                    }
+            
+                    //For Date formatted input
+                    var expDate = document.getElementById('exp');
+                    expDate.onkeyup = function (e) {
+                    if (this.value == this.lastValue) return;
+                    var caretPosition = this.selectionStart;
+                    var sanitizedValue = this.value.replace(/[^0-9]/gi, '');
+                    var parts = [];
+            
+                    for (var i = 0, len = sanitizedValue.length; i < len; i +=2) { parts.push(sanitizedValue.substring(i, i + 2)); } for (var i=caretPosition - 1; i>= 0; i--) {
+                        var c = this.value[i];
+                        if (c < '0' || c> '9') {
+                            caretPosition--;
+                            }
+                            }
+                            caretPosition += Math.floor(caretPosition / 2);
+            
+                            this.value = this.lastValue = parts.join('/');
+                            this.selectionStart = this.selectionEnd = caretPosition;
+                            }
+            
+                            // Radio button
+                            $('.radio-group .radio').click(function(){
+                            $(this).parent().find('.radio').removeClass('selected');
+                            $(this).addClass('selected');
+                            });
+            
+                            })
+    </script>
+    <script>
+        function coupen(){
+            $('#coupen_div').css({'visibility': 'visible'})
+        }
+        $('#coupen_button').click(function(){
+            var method = $('#method').val()
+            var code = $('#check_coupen').val()
+            var data = {
+            'csrfmiddlewaretoken':'{{csrf_token}}',
+            'check_code':code
+            }
+            if(code==''){
+            $('#span').html('Enter the code')
+            }else if(method=='0'){
+            $('#span').html('select payment method')
+            }else{console.log('hi')
+                $.ajax({
+                    url:'/checkcoupen/',
+                    method:'POST',
+                    data:data,
+                    dataType:'json',
+                    success:function(data){
+                    if(data=='true'){
+                        window.location.replace('/book/')
+                    }
+                    if(data=='false'){
+                        $('#span').html('Incorrect code')
+                    }
+                    if(data=='used'){
+                        $('#span').html('Code is Used')
+                    }
+                    }
+                })
+            }
+    
+    
+        })
+
+        function razorpay(){    
+            var price = '{{razorpay_price}}'
+            var payment_status = 'razorpay'
+            var options = {
+                "key": "rzp_test_0CJlFTJsvWeMla", // Enter the Key ID generated from the Dashboard
+                "amount": price, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+                "currency": "INR",
+                "name": "Live Hotel",
+                "description": "Room booking",
+                "image": "https://www.iconpacks.net/icons/2/free-hotel-icon-1880-thumb.png",
+                "order_id": "{{payment.id}}", //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
+                "handler": function (response) {
+                        alert('Transaction completed..!!!');
+                        var price = '{{price}}'
+                        var room_id = '{{room.id}}'
+                        var method = $('#method').val()
+                        var userdata = {
+                            'csrfmiddlewaretoken':'{{csrf_token}}',
+                            'room_id':room_id,
+                            'price':price,
+                            'method':method
+                        }
+                        $.ajax({
+                        url:'/book/',
+                        method:'POST',
+                        data:userdata,
+                        dataType:'json',
+                        success:function(data){
+                            if(data=='true'){
+                            window.location.replace('/history/')
+                            }
+                            if(data=='false'){
+                            $('#span').html('something wend wrong')
+                            }
+                            if(data=='room'){
+                            $('#span').html('room not available')
+                            }
+                        }
+                        })
+                    //successrazorpay(tid)
+                        },
+                        "prefill": {
+                            "name": "{{address.name}}",
+                            "email": "{{address.email}}",
+                            "contact": "9999999999"
+                        },
+                        "notes": {
+                            "address": "Razorpay Corporate Office"
+                        },
+                        "theme": {
+                            "color": "#F37254"
+                        }
+                    };
+                    var rzp1 = new Razorpay(options);
+                    
+                        rzp1.open();
+                }
+    
+        
+    </script>
+</body>
+</html>
+
+
+

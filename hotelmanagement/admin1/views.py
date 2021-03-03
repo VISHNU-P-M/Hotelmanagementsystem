@@ -12,6 +12,8 @@ from datetime import date
 from reception.models import *
 from django.db.models import Avg, Count, Sum
 from datetime import datetime , date, timedelta
+import base64
+from django.core.files.base import ContentFile
 
 # Create your views here.
 def login(request):
@@ -27,7 +29,7 @@ def login(request):
             else:
                 return JsonResponse('false',safe=False)
         else:
-            return render(request,'adminlogin.html')
+            return render(request,'admin/adminlogin.html')
 
 def adminhome(request):
     if request.session.has_key('password'):
@@ -35,11 +37,19 @@ def adminhome(request):
         book1 = BookRoom.objects.all().count()
         book2 = ReceptionBook.objects.all().count()
         room = RoomOverView.objects.all()
-        available = 0
         total = 0
         for x in room:
-            available = available + x.available
             total = total + x.rooms
+        day = date.today()
+        userbook = BookRoom.objects.filter(check_in=day)
+        no_room = 0
+        for x in userbook:
+            if x.block == False:
+                no_room += x.no_of_room
+        receptionbook = ReceptionBook.objects.filter(check_in=day)
+        for x in receptionbook:
+            no_room += x.no_of_room
+        available = total-no_room
         book = book1+book2
         sales1 = 0
         sales2 = 0
@@ -53,9 +63,9 @@ def adminhome(request):
         sales = sales1 + sales2
         y01 = datetime.now().year
         y02 = y01-1
-        y03 = y02-2
-        y04 = y03-3
-        y05 = y04-4
+        y03 = y02-1
+        y04 = y03-1
+        y05 = y04-1
         salesy1=0
         salesy2=0
         salesy3=0
@@ -333,7 +343,7 @@ def edituser(request,id):
                 return JsonResponse('true',safe=False)
         else:
             user = Details.objects.get(user_id=id)
-            return render(request,'edituser.html',{'user':user})
+            return render(request,'admin/edituser.html',{'user':user})
     else:
         return redirect(login)
 def adduser(request):
@@ -354,7 +364,7 @@ def adduser(request):
                 Details.objects.create(phone=phone,user=user)
                 return JsonResponse('true',safe=False)
         else:
-            return render(request,'adduser.html')
+            return render(request,'admin/adduser.html')
     else:
         return redirect(login)
 def deleteuser(request,id):
@@ -397,7 +407,7 @@ def editreceptionist(request,id):
             return JsonResponse('true',safe=False)
         else:
             user = Receptionist.objects.get(id=id)
-            return render(request,'editreceptionist.html',{'user':user})
+            return render(request,'admin/editreceptionist.html',{'user':user})
     else:
         return redirect(login)    
     
@@ -412,7 +422,7 @@ def addreceptionist(request):
                 Receptionist.objects.create(username=username,password=make_password(password))
                 return JsonResponse('true',safe=False)
         else:
-            return render(request,'addreceptionist.html')
+            return render(request,'admin/addreceptionist.html')
     else:
         return redirect(login)
 def deletereceptionist(request,id):
@@ -436,17 +446,11 @@ def add_over_view(request):
             rooms = request.POST['room_no']
             price = request.POST['price']
             description = request.POST['description']
-            img1 = request.FILES.get('img1')
-            img2 = request.FILES.get('img2')
-            img3 = request.FILES.get('img3')
-            img4 = request.FILES.get('img4')
-            img5 = request.FILES.get('img5')
-            img6 = request.FILES.get('img6')
             category = request.POST['category']
             category1 = Category.objects.get(id=category)
             amenities = request.POST.getlist('name')
             try:
-                room = RoomOverView.objects.create(category=category1,rooms=rooms,available=rooms,description=description,price=price,pic1=img1,pic2=img2,pic3=img3,pic4=img4,pic5=img5,pic6=img6)
+                room = RoomOverView.objects.create(category=category1,rooms=rooms,available=rooms,description=description,price=price)
                 for aminity in amenities:
                     am = Amenities.objects.get(id=aminity)
                     AmenitiesList.objects.create(room=room ,amenities=am)
@@ -462,6 +466,44 @@ def add_over_view(request):
             return render(request,'admin/addoverview.html',context)
     else:
         return redirect(login)
+def add_room_pic(request,id):
+    if request.session.has_key('password'):
+        if request.method == 'POST':
+            image = request.POST['64input']
+            room = RoomOverView.objects.get(id=id)
+            room_category = room.category.category
+            format, imgstr = image.split(';base64,')
+            ext = format.split('/')[-1]
+            data = ContentFile(base64.b64decode(imgstr), name=room_category + '.' + ext)
+            RoomPic.objects.create(room=room, pic=data)
+            return redirect(viewrooms)
+        else:
+            room = RoomOverView.objects.get(id=id)
+            context = {'room':room}
+            return render(request,'admin/addroompic.html',context)  
+    else:
+        return redirect(login)
+            
+def view_room_pic(request,id):
+    if request.session.has_key('password'):
+        if request.method == 'POST':
+            pass
+        else:
+            room = RoomOverView.objects.get(id=id)
+            roompic = RoomPic.objects.filter(room=room)
+            context = {'roompics':roompic,'room':room}
+            return render(request,'admin/viewroompic.html',context) 
+    else:
+        return redirect(login)              
+
+def remove_pic(request,id):
+    if request.session.has_key('password'):
+        roompic = RoomPic.objects.get(id=id)
+        roompic.delete()
+        return redirect(viewrooms)
+    else:
+        return redirect(login)
+
 
 def edit_over_view(request,id):
     if request.session.has_key('password'):
@@ -479,37 +521,6 @@ def edit_over_view(request,id):
             for x in amenities:
                 amenity = Amenities.objects.get(id=x)
                 AmenitiesList.objects.create(room=room,amenities=amenity)
-
-            if 'img1' not in request.POST:
-                pic1 = request.FILES.get('img1')
-            else:
-                pic1 = room.pic1
-            room.pic1 = pic1
-            if 'img2' not in request.POST:
-                pic2 = request.FILES.get('img2')
-            else:
-                pic2 = room.pic2
-            room.pic2 = pic2
-            if 'img3' not in request.POST:
-                pic3 = request.FILES.get('img3')
-            else:
-                pic3 = room.pic3
-            room.pic3 = pic3
-            if 'img4' not in request.POST:
-                pic4 = request.FILES.get('img4')
-            else:
-                pic4 = room.pic4
-            room.pic4 = pic4
-            if 'img5' not in request.POST:
-                pic5 = request.FILES.get('img5')
-            else:
-                pic5 = room.pic5
-            room.pic5 = pic5
-            if 'img6' not in request.POST:
-                pic6 = request.FILES.get('img6')
-            else:
-                pic6 = room.pic6
-            room.pic6 = pic6
             room.save()
             return redirect(viewrooms)
         else:
@@ -538,10 +549,47 @@ def delete_over_view(request,id):
 
 def roomstatus(request):
     if request.session.has_key('password'):
-        room = RoomOverView.objects.all()
-        category = Category.objects.all()
-        context = {'rooms':room,'categories':category}
-        return render(request,'admin/roomstatus.html',context)
+        if request.method == 'POST':
+            day = request.POST['date']
+            request.session['day'] = day
+            return redirect(roomstatus)
+        else:
+            room = RoomOverView.objects.all()
+            if request.session.has_key('day'):
+                day = request.session['day']
+                del request.session['day']
+                avalailable_dict = {}
+                for y in room:
+                    no_room = 0
+                    userbook = BookRoom.objects.filter(check_in=day,room=y)
+                    for x in userbook:
+                        if x.block == False:
+                            no_room += x.no_of_room
+                    receptionbook = ReceptionBook.objects.filter(check_in=day,room=y)
+                    for x in receptionbook:
+                        no_room += x.no_of_room
+                    availabe_room = y.rooms - no_room
+                    avalailable_dict[y.category.category]=availabe_room
+                category = Category.objects.all()
+                context = {'rooms':room,'categories':category,'date':day,'available_rooms':avalailable_dict}
+                return render(request,'admin/roomstatus.html',context)
+            else:
+                day = date.today()
+                avalailable_dict = {}
+                for y in room:
+                    no_room = 0
+                    userbook = BookRoom.objects.filter(check_in=day,room=y)
+                    for x in userbook:
+                        if x.block == False:
+                            no_room += x.no_of_room
+                    receptionbook = ReceptionBook.objects.filter(check_in=day,room=y)
+                    for x in receptionbook:
+                        no_room += x.no_of_room
+                    availabe_room = y.rooms - no_room
+                    avalailable_dict[y.category.category]=availabe_room
+                category = Category.objects.all()
+                context = {'rooms':room,'categories':category,'date':day,'available_rooms':avalailable_dict}
+                return render(request,'admin/roomstatus.html',context)
     else:
         return redirect(login)
 
@@ -563,7 +611,7 @@ def addcategory(request):
                 Category.objects.create(category=category_name)
                 return redirect(categories)
         else:
-            return render(request, 'addcategory.html')
+            return render(request, 'admin/addcategory.html')
     else:
         return redirect(login)
 
@@ -592,7 +640,7 @@ def addamenities(request):
                 Amenities.objects.create(amenities=ameneties)
                 return redirect(amenities1)
         else:
-            return render(request,'addamenities.html')
+            return render(request,'admin/addamenities.html')
     else:
         return redirect(login)
 def deleteamenities(request,id):
@@ -615,9 +663,6 @@ def blockbook(request,id):
         book = BookRoom.objects.get(id=id)
         if book.block == False:
             book.block = True
-            room = RoomOverView.objects.get(category = book.room.category)
-            room.available = room.available + book.no_of_room
-            room.save()
             book.save()
         return redirect(bookings)
     else:
@@ -655,7 +700,11 @@ def reports(request):
             context = {'user_book':userbook, 'reception_book':recbook}
             return render(request,'admin/report.html',context)
         else:
-            return render(request,'admin/report.html')
+            today = date.today()
+            week = date.today() - timedelta(days=7)
+            book = BookRoom.objects.filter(check_in__range = (week,today))
+            rec_book = ReceptionBook.objects.filter(check_in__range = (week,today))
+            return render(request,'admin/report.html',{'user_book':book,'reception_book':rec_book}) 
     else:
         return redirect(login)
 def datereport(request):
@@ -674,8 +723,8 @@ def datereport(request):
                 rec_book = ReceptionBook.objects.filter(check_in__range = (week,today))
                 return render(request,'admin/report.html',{'user_book':book,'reception_book':rec_book})
             elif sort == 'month':
-                to = date.today()- timedelta(days=30)
-                from_date = date.today() - timedelta(days=60)
+                to = date.today()
+                from_date = date.today() - timedelta(days=30    )
                 book = BookRoom.objects.filter(check_in__range = (from_date,to))
                 rec_book = ReceptionBook.objects.filter(check_in__range = (from_date,to))
                 return render(request,'admin/report.html',{'user_book':book,'reception_book':rec_book})
@@ -722,7 +771,6 @@ def add_offer(request):
                 return JsonResponse('true',safe=False)
         else:
             rooms = RoomOverView.objects.all()
-            print(coupen.coupen_name)
             context = {'rooms':rooms}
             return render(request,'admin/addoffer.html',context)
     else:
@@ -762,7 +810,5 @@ def delete_coupen(request):
         return redirect(view_offer)
     else:
         return redirect(login)
-def reply(request):
-    pass
 
 

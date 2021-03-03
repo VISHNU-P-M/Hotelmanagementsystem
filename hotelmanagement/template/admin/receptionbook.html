@@ -41,9 +41,6 @@
                     <th style="color: black;"scope="col">no_of_guest</th>
                     <th style="color: black;"scope="col">Price</th>
                     <th style="color: black;"scope="col">Paid</th>
-                    <th style="color: black;"scope="col">Checked Out</th>
-                    <th></th>
-                    <th></th>
                 </tr>
                 </thead>
                 <tbody>
@@ -57,11 +54,8 @@
                     <td style="color: black;"> {{book.check_out}} </td>
                     <td style="color: black;"> {{book.no_of_room}}</td> 
                     <td style="color: black;"> {{book.no_of_guest}}</td>
-                    <td style="color: black;"> {{book.room.price}}</td>
+                    <td style="color: black;"> {{book.price}}</td>
                     <td style="color: black;"> {{book.pay_status}}</td>
-                    <td style="color: black;"> {{book.checked_out}}</td>
-                    <td ><a href='/admin/editbook/{{book.id}}' style="text-decoration: none;color:yellow;"><i class="fa fa-pencil" aria-hidden="true"></i><span>edit</span></a></td>
-                    <td ><a href='/admin/deletebook/{{book.id}}' style="text-decoration: none;color:red; "><i class="fa fa-trash" aria-hidden="true"></i><span>delete</span></a></td>
                 </tr>
                 {% endfor %}
                 </tbody>

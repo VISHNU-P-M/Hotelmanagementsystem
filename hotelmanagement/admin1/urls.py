@@ -15,6 +15,9 @@ urlpatterns = [
     path('deletereceptionist/<int:id>',views.deletereceptionist,name='deletereceptionist'),
     path('viewrooms/',views.viewrooms,name='viewrooms'),
     path('addoverview/', views.add_over_view, name='addoverview'),
+    path('addroompic/<int:id>',views.add_room_pic,name='addroompic'),
+    path('viewroompic/<int:id>',views.view_room_pic,name='viewroompic'), 
+    path('removepic/<int:id>',views.remove_pic,name='removepic'),
     path('editoverview/<int:id>',views.edit_over_view, name = 'editoverview'),
     path('deleteoverview/<int:id>', views.delete_over_view, name='deleteoverview'),
     path('roomstatus/',views.roomstatus, name='roomstatus'),
@@ -36,7 +39,6 @@ urlpatterns = [
     path('deleteoffer/<int:id>',views.delete_offer,name = 'deleteoffer'),
     path('addcoupen/',views.add_coupen,name='addcoupen'),
     path('deletecoupen/',views.delete_coupen,name='deletecoupen'),
-    path('reply/',views.reply,name='reply'),
     path('viewreview/',views.view_reviews,name='reviews'),
     path('logout/',views.logout,name='logout')
 ]

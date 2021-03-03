@@ -19,21 +19,18 @@ class RoomOverView(models.Model):
     available = models.BigIntegerField()
     description = models.TextField()
     price = models.DecimalField(max_digits=20,decimal_places=2)
-    pic1 = models.ImageField(null='True',upload_to='pics')
-    pic2 = models.ImageField(null='True',upload_to='pics')
-    pic3 = models.ImageField(null='True',upload_to='pics')
-    pic4 = models.ImageField(null='True',upload_to='pics')
-    pic5 = models.ImageField(null='True',upload_to='pics')
-    pic6 = models.ImageField(null='True',upload_to='pics')
 
-    # @property
-    # def image(self,pic):
-    #     if pic =='':
-    #         self.pic = ''
-    #         return self.pic
-    #     else:
-    #         return pic
+class RoomPic(models.Model):
+    room = models.ForeignKey(RoomOverView,on_delete=models.CASCADE)
+    pic = models.ImageField(null=True,upload_to='pics')
 
+    @property
+    def ImageURL(self):
+        try:
+            url= self.pic.url
+        except:
+            url=''
+        return url
 
 
 class AmenitiesList(models.Model):

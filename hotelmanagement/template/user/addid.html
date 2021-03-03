@@ -67,13 +67,15 @@
                 <form action="/addidproof/" method="POST" enctype="multipart/form-data">
                     {%csrf_token%}
                     <H5>HI {{user.first_name}}, <br> Add your any id proof for booking rooms</H5>
-                    <input type="file" name="id_pic" id="id_pic">
-                    <input type="submit" name="" id="" value="Submit">
+                    <input type="file" name="id_pic" id="id_pic" required>
+                    <span id="span" style="color: red;"></span>
+                    <input type="submit" name="" id="sub" value="Submit" required>
                 </form>
             </div>
         </div>
     </section>
     
     <script src="{% static 'assets/js/owl.carousel.js'%}"></script>
+    
 </body>
 </html>

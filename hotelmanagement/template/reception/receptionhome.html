@@ -217,7 +217,17 @@
                               <div class="col-lg-12  col-md-12 col-xs-12 thumb">
                                 <div class="float-left col-lg-6">
                                   <a href="/reception/specificroom/{{room.id}}" class="fancybox" rel="ligthbox">
-                                    <img  src="{{room.pic1.url}}" class="zoom img-fluid "  alt="">
+                                    <div id="carouselExampleSlidesOnly" class="carousel slide" data-bs-ride="carousel">
+                                      <div class="carousel-inner">
+                                        {% for roompic in roompics %}
+                                          {% if roompic.room.category.category == room.category.category %}
+                                            <div class="carousel-item active">
+                                              <img src="{{roompic.ImageURL}}" class="d-block w-100" alt="...">
+                                            </div>
+                                          {% endif %}
+                                        {% endfor %}
+                                      </div>
+                                    </div>
                                   </a>
                                   <label style="font-family: fantasy; font-size: 20px; color: initial; margin-top: 25px;" for="price">₹ {{room.price}}</label><br>
                                   <a href="/reception/specificroom/{{room.id}}"><button type="button" class="btn btn-success">Book Now</button></a>
@@ -334,6 +344,7 @@
         var room = $('#room').val()
         var data = {
           'csrfmiddlewaretoken':'{{csrf_token}}',
+          'check_in':check_in,
           'category':category,
           'amenities[]':array,
           'room':room,
@@ -351,6 +362,9 @@
             success:function(data){
               if(data == 'true'){
                 window.location.replace('/reception/filter/')
+              }
+              if(data=='amenity'){
+                $('#span').html('Amenities not availabe')
               }
               if(data == 'false'){
                 $('#span').html('No rooms available')

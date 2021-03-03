@@ -257,16 +257,31 @@
         </div>
         <div class="row">
             {% for category in categories %}
-              <label for="" style="font-size: 25px; font-family: -webkit-body; color: brown;">{{category.category}}</label>
               {% for room in rooms %}
                   {% if room.category.category == category.category %}
+                  <label for="" style="font-size: 25px; font-family: -webkit-body; color: brown;">{{category.category}}</label>
                       <div class="col-lg-12  col-md-12 col-xs-12 thumb">
                         <div class="float-left col-lg-6">
+                          {% for offer in offers %}
+                            {% if offer.category.category == room.category.category %}
+                            {% if offer.start == True %}
+                            <label for="" style="font-size: 20px; font-family: -webkit-body; color: rgb(40 167 69);">--Special offer-- </label>
+                            {% endif %}
+                            {% endif %}
+                          {% endfor %}
                           <a href="/specificroom/{{room.id}}" class="fancybox" rel="ligthbox">
-                            <img  src="{{room.pic1.url}}" class="zoom img-fluid "  alt="">
+                            <div id="carouselExampleSlidesOnly" class="carousel slide" data-bs-ride="carousel">
+                              <div class="carousel-inner">
+                                {% for roompic in roompics %}
+                                  {% if roompic.room.category.category == room.category.category %}
+                                    <div class="carousel-item active">
+                                      <img src="{{roompic.ImageURL}}" class="d-block w-100" alt="...">
+                                    </div>
+                                  {% endif %}
+                                {% endfor %}
+                              </div>
+                            </div>
                           </a>
-                          <label style="font-family: fantasy; font-size: 20px; color: initial; margin-top: 25px;" for="price">₹ {{room.price}}</label><br>
-                          <a href="/specificroom/{{room.id}}"><button type="button" class="btn btn-success">Book Now</button></a>
                         </div>
                         <div class="float-right col-lg-6">
                           <h6>About: <br></h6><p>{{room.description}}</p><br>
@@ -278,6 +293,15 @@
                               {%endif%}
                             {%endfor%}
                           </p>
+                          <label style="font-family: fantasy; font-size: 20px; color: initial; margin-top: 25px;" for="price">₹ {{room.price}}</label><br>
+                          {% for offer in offers %}
+                            {% if offer.category.category == room.category.category %}
+                              {% if offer.start == True %}
+                                <label style="font-family: fantasy; font-size: 20px; color: initial; margin-top: 25px;" for="price">Offer price:₹ {{offer.discount}}</label><br>
+                              {% endif %}
+                            {% endif %}
+                          {% endfor %}
+                          <a href="/specificroom/{{room.id}}"><button type="button" class="btn btn-success">Book Now</button></a>
                         </div>
                       </div>
                   {% endif %}
@@ -388,13 +412,14 @@
         var room = $('#room').val()
         var data = {
           'csrfmiddlewaretoken':'{{csrf_token}}',
+          'check_in':check_in,
           'category':category,
           'amenities[]':array,
           'room':room,
         }
         if(check_in==''){
           $('#span').html('select check in date')
-        }else if(category=='0'|| array =='' || room =='0' ){
+        }else if(category=='0' || room =='0' ){
           $('#span').html('select credentials')
         }else{
           $.ajax({
@@ -405,6 +430,9 @@
             success:function(data){
               if(data == 'true'){
                 window.location.replace('/filter/')
+              }
+              if(data == 'amenity'){
+                $('#span').html('Amenities not available')
               }
               if(data == 'false'){
                 $('#span').html('No rooms available')

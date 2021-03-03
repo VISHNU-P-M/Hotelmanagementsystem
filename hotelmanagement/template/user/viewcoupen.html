@@ -245,31 +245,33 @@
         <h1>Coupons</h1>
           <div class="row">
             {% if coupen.used == False %}
-            <article class="card fl-left">
-            <section class="date">
-                <time datetime="23th feb">
-                  <span>{{coupen.start}} to {{coupen.end}}</span>
-                </time>
-            </section>
-              <section class="card-cont">
-                <small>Live Hotel</small>
-                <h3>{{coupen.coupen_name}}</h3>
-                <div class="even-date">
-                    <i class="fa fa-money" aria-hidden="true"></i>
-                 <time>
-                   <span>Special Offer</span>
-                   <span>Coupen</span>
-                 </time>
-                </div>
-                <div class="even-info">
-                    <i class="fa fa-code" aria-hidden="true"></i>
-                  <p style="font-size: 18px; color: #13b113; text-decoration: unset;" >
-                    {{coupen.code}}
-                  </p>
-                </div>
-                <small>apply and get {{coupen.percent}}% off</small>
+              {% if coupen.live == True %}
+              <article class="card fl-left">
+              <section class="date">
+                  <time datetime="23th feb">
+                    <span>{{coupen.start}} to {{coupen.end}}</span>
+                  </time>
               </section>
-            </article>
+                <section class="card-cont">
+                  <small>Live Hotel</small>
+                  <h3>{{coupen.coupen_name}}</h3>
+                  <div class="even-date">
+                      <i class="fa fa-money" aria-hidden="true"></i>
+                  <time>
+                    <span>Special Offer</span>
+                    <span>Coupen</span>
+                  </time>
+                  </div>
+                  <div class="even-info">
+                      <i class="fa fa-code" aria-hidden="true"></i>
+                    <p style="font-size: 18px; color: #13b113; text-decoration: unset;" >
+                      {{coupen.code}}
+                    </p>
+                  </div>
+                  <small>apply and get {{coupen.percent}}% off</small>
+                </section>
+              </article>
+              {% endif %}
             {% endif %}
           </div>
   

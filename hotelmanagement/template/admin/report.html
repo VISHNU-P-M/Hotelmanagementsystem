@@ -28,7 +28,7 @@
                     <form action="/admin/reports/" method="POST" class="form">
                         {% csrf_token %}
                         <label for="">From</label>
-                        <input type="date" name="from" id="from" required>
+                        <input type="date" name="from" id="from" onchange="to_date()" required>
                         <label for="">To</label>
                         <input type="date" name="to" id="to" required>
                         <span id="span1" style="color: red;"></span>
@@ -110,5 +110,22 @@
     $(document).ready(function(){
         $('#table1').DataTable();
     });
+</script>
+<script>
+    function to_date(){
+        $('#to').val('')
+        var from_date = $('#from').val()
+        var date = new Date(from_date)
+        var month = date.getMonth() +1;
+        var day = date.getDate() +1;
+        var year = date.getFullYear();
+        if(month < 10)
+            month = '0' + month.toString();
+        if(day < 10)
+            day = '0' + day.toString();
+        
+        var maxDate = year + '-' + month + '-' + day;
+        $('#to').attr('min', maxDate);
+      }
 </script>
 {% endblock %}

@@ -9,47 +9,25 @@ import random
 import requests
 import json
 from django.core.files import File
+from datetime import date,datetime,timedelta
 # Create your views here.
 def home(request):
-        book = BookRoom.objects.all()
-        for x in book:
-            if x.is_past_due == True:
-                if x.checked_out == False:
-                    room1 = RoomOverView.objects.get(category=x.room.category)
-                    room1.available = room1.available + x.no_of_room
-                    room1.save()
-                    x.checked_out = True
+        if Offer.objects.exists():
+            offer = Offer.objects.all()
+            for x in offer:
+                if x.is_started==True:
+                    x.start=True
                     x.save()
-        reception_book = ReceptionBook.objects.all()
-        for x in reception_book:
-            if x.is_past_due == True:
-                if x.checked_out == False:
-                    room1 = RoomOverView.objects.get(category=x.room.category)
-                    room1.available = room1.available + x.no_of_room
-                    room1.save()
-                    x.checked_out = True
+                if x.is_valid == True:
+                    x.start=False
                     x.save()
-        offer = Offer.objects.all()
-        for x in offer:
-            if x.is_started==True:
-                x.start=True
-                x.save()
-            if x.is_valid == True:
-                x.delete()
-        users = User.objects.all()
-        for x in users:
-            coupen = Coupen.objects.get(user=x)
-            if coupen.is_started == True:
-                coupen.live = True
-                coupen.save()
-            if coupen.is_valid==True:
-                coupen.delete()
-
         room = RoomOverView.objects.all()
         category = Category.objects.all()
         amenities = Amenities.objects.all()
         setamenities = AmenitiesList.objects.all()
-        contex = {'rooms':room,'categories':category,'amenities':amenities,'setamenities':setamenities}
+        offer = Offer.objects.all()
+        roompics = RoomPic.objects.all()
+        contex = {'rooms':room,'categories':category,'amenities':amenities,'setamenities':setamenities,'offers':offer,'roompics':roompics}
         return render(request,'user/index.html',contex)
     
 def login(request):
@@ -200,76 +178,194 @@ def add_id_proof(request):
             return render(request,'user/addid.html',{'user':user})
 
 def specific_room(request,id):
-    if request.method=='POST':
-        check_in = request.POST['check_in']
-        check_out = request.POST['check_out']
-        no_of_room = int(request.POST['no_of_room'])
-        no_of_guest = request.POST['no_of_guest']
-        price = request.POST['price']
-        method = request.POST['method']
-        user = request.user
-        room = RoomOverView.objects.get(id=id)
-        if room.available>no_of_room:
-            if method=='cod':
-                room.available = room.available-no_of_room
-                room.save()
-                BookRoom.objects.create(user=user,room=room,check_in=check_in,check_out=check_out,no_of_room=no_of_room,no_of_guest=no_of_guest,pay_status=False,checked_out=False,price=price)
-                return JsonResponse('true',safe=False)
-            elif method=='paypal':
-                room.available -= no_of_room
-                room.save()
-                BookRoom.objects.create(user=user,room=room,check_in=check_in,check_out=check_out,no_of_room=no_of_room,no_of_guest=no_of_guest,pay_status=True,checked_out=False,price=price)
-                return JsonResponse('true',safe=False)
-            elif method=='razorpay':
-                room.available -= no_of_room
-                room.save()
-                BookRoom.objects.create(user=user,room=room,check_in=check_in,check_out=check_out,no_of_room=no_of_room,no_of_guest=no_of_guest,pay_status=True,checked_out=False,price=price)
-                return JsonResponse('true',safe=False)
+    if request.user.is_authenticated:
+        if request.method=='POST':
+            check_in_str = request.POST['check_in']
+            check_out_str = request.POST['check_out']
+            no_of_room = int(request.POST['no_of_room'])
+            no_of_guest = request.POST['no_of_guest']
+            user = request.user
+            room = RoomOverView.objects.get(id=id)
+            if room.available >= no_of_room:
+                request.session['check_in']=check_in_str
+                request.session['check_out']=check_out_str
+                request.session['no_of_room']=no_of_room
+                request.session['no_of_guest']=no_of_guest
+                request.session['room_id']=room.id
+                check_in = datetime.strptime(check_in_str, "%Y-%m-%d").date()
+                check_out = datetime.strptime(check_out_str,"%Y-%m-%d").date()
+                day = (check_out - check_in).days
+                if Offer.objects.filter(category=room.category):
+                    offer = Offer.objects.get(category=room.category)
+                    if offer.start == True:
+                        price0 = offer.discount*day*no_of_room
+                        price = float(price0)
+                        request.session['price']=price
+                        return JsonResponse('true', safe=False)
+                    else:
+                        price0 = room.price*day*no_of_room
+                        price = float(price0)
+                        request.session['price']=price
+                        return JsonResponse('true',safe=False)
+                else:
+                    price0 = room.price*day*no_of_room
+                    price = float(price0)
+                    request.session['price']=price
+                    return JsonResponse('true',safe=False)
             else:
-                coupen = Coupen.objects.get(user=user)
-                coupen.used = False
-                coupen.save()
-                return JsonResponse('false',safe=False)
+                return JsonResponse('room',safe=False)
+                pass
         else:
-            coupen = Coupen.objects.get(user=user)
-            coupen.used = False
-            coupen.save()
-            return JsonResponse('room',safe=False)
-    else:
-        if request.user.is_authenticated:
             room = RoomOverView.objects.get(id=id)
             setamenities = AmenitiesList.objects.filter(room=room.id)
             total = int(room.price/70)
             reviews = Review.objects.filter(category=room.category)
             user = request.user
-            if Coupen.objects.filter(user=user).exists():
-                coupen = Coupen.objects.get(user=user)
-                if Offer.objects.filter(category=room.category).exists():
-                    offer = Offer.objects.get(category=room.category)
-                    if offer.start==True:
-                        start = True
-                        contex = {'rooms':room,'amenities':setamenities, 'total':total,'reviews':reviews,'offer':offer,'start':start,'coupen':coupen,'coupen_exist':True}
-                        return render(request,'user/viewspecificroom.html',contex)
+            roompics = RoomPic.objects.filter(room=room)
+            if Offer.objects.filter(category=room.category).exists():
+                offer = Offer.objects.get(category=room.category)
+                if offer.start==True:
+                    contex = {'rooms':room,'amenities':setamenities, 'total':total,'reviews':reviews,'offer':offer,'start':True,'roompics':roompics}
+                    return render(request,'user/viewspecificroom.html',contex)
                 else:
-                    contex = {'rooms':room,'amenities':setamenities, 'total':total,'reviews':reviews,'coupen':coupen,'coupen_exist':True}
+                    contex = {'rooms':room,'amenities':setamenities, 'total':total,'reviews':reviews,'roompics':roompics}
                     return render(request,'user/viewspecificroom.html',contex)
             else:
-                contex = {'rooms':room,'amenities':setamenities, 'total':total,'reviews':reviews}
+                contex = {'rooms':room,'amenities':setamenities, 'total':total,'reviews':reviews,'roompics':roompics}
                 return render(request,'user/viewspecificroom.html',contex)
+    else:
+        return redirect(home)  
 
-            
+def book_room(request):
+    if request.user.is_authenticated:
+        if request.method == 'POST':
+            check_in = request.session['check_in']
+            check_out = request.session['check_out']
+            no_of_room = request.session['no_of_room']
+            no_of_guest = request.session['no_of_guest']
+            price = request.POST['price']
+            method = request.POST['method']
+            id = request.POST['room_id']
+            room = RoomOverView.objects.get(id=id)
+            user = request.user
+            userbook = BookRoom.objects.filter(room=room,check_in=check_in)
+            receptionbook = ReceptionBook.objects.filter(room=room,check_in=check_in)
+            rooms = 0
+            for x in userbook:
+                if x.block == False:
+                    rooms += x.no_of_room
+            for x in receptionbook:
+                rooms += x.no_of_room
+            availabe_room = room.rooms - rooms
+            if no_of_room <= availabe_room:
+                if method=='cod':
+                    BookRoom.objects.create(user=user,room=room,check_in=check_in,check_out=check_out,no_of_room=no_of_room,no_of_guest=no_of_guest,pay_status=False,checked_out=False,price=price)
+                    del request.session['check_in'] 
+                    del request.session['check_out']
+                    del request.session['no_of_room']
+                    del request.session['no_of_guest']
+                    del request.session['room_id']
+                    del request.session['price']
+                    return JsonResponse('true',safe=False)
+                elif method=='paypal':
+                    BookRoom.objects.create(user=user,room=room,check_in=check_in,check_out=check_out,no_of_room=no_of_room,no_of_guest=no_of_guest,pay_status=True,checked_out=False,price=price)
+                    del request.session['check_in']
+                    del request.session['check_out']
+                    del request.session['no_of_room']
+                    del request.session['no_of_guest']
+                    del request.session['room_id']
+                    del request.session['price']
+                    return JsonResponse('true',safe=False)
+                elif method=='razorpay':
+                    BookRoom.objects.create(user=user,room=room,check_in=check_in,check_out=check_out,no_of_room=no_of_room,no_of_guest=no_of_guest,pay_status=True,checked_out=False,price=price)
+                    del request.session['check_in']
+                    del request.session['check_out']
+                    del request.session['no_of_room']
+                    del request.session['no_of_guest']
+                    del request.session['room_id']
+                    del request.session['price']
+                    return JsonResponse('true',safe=False)
+                else:
+                    coupen = Coupen.objects.get(user=user)
+                    coupen.used = False
+                    coupen.save()
+                    del request.session['check_in']
+                    del request.session['check_out']
+                    del request.session['no_of_room']
+                    del request.session['no_of_guest']
+                    del request.session['room_id']
+                    del request.session['price']
+                    return JsonResponse('false',safe=False)
+            else:
+                coupen = Coupen.objects.get(user=user)
+                coupen.used = False
+                coupen.save()
+                del request.session['check_in']
+                del request.session['check_out']
+                del request.session['no_of_room']
+                del request.session['no_of_guest']
+                del request.session['room_id']
+                del request.session['price']
+                return JsonResponse('room',safe=False)
+        
         else:
-            return redirect(login)
+            check_in = request.session['check_in']
+            check_out = request.session['check_out']
+            no_of_room = request.session['no_of_room']
+            no_of_guest = request.session['no_of_guest']
+            id = request.session['room_id']
+            room = RoomOverView.objects.get(id=id)
+            price = request.session['price']
+            paypal_price=price/70
+            razorpay_price = price*100
+            user = request.user
+            room_no = []
+            number = random.randint(100,200)
+            room_no.append(number)
+            for i in range(1,no_of_room):
+                number += 1
+                print(number) 
+                room_no.append(number)
+            if Coupen.objects.filter(user=user).exists():
+                if request.session.has_key('coupon'):
+                    coupon = Coupen.objects.get(user=user)
+                    discount = int(coupon.percent)
+                    discount_price = price - (price*(discount/100))
+                    paypal_price = discount_price/70
+                    razorpay_price = discount_price*100
+                    del request.session['coupon']
+                    context = {'check_in':check_in,'check_out':check_out,'room':room,'room_no':room_no,'price':discount_price,'paypal_price':paypal_price,'razorpay_price':razorpay_price}
+                    return render(request,'user/book.html',context)
+                else:
+                    coupon = Coupen.objects.get(user=user)
+                    if coupon.used == False:
+                        context = {'check_in':check_in,'check_out':check_out,'room':room,'room_no':room_no,'price':price,'coupon':coupon,'coupen_exist':True,'paypal_price':paypal_price,'razorpay_price':razorpay_price}
+                        return render(request,'user/book.html',context)
+                    else:
+                        context = {'check_in':check_in,'check_out':check_out,'room':room,'room_no':room_no,'price':price,'paypal_price':paypal_price,'razorpay_price':razorpay_price}
+                        return render(request,'user/book.html',context)
+            else:
+                context = {'check_in':check_in,'check_out':check_out,'room':room,'room_no':room_no,'price':price,'paypal_price':paypal_price,'razorpay_price':razorpay_price}
+                return render(request,'user/book.html',context)
+    else:
+        return redirect(home)
+
 
 def view_coupen(request):
     if request.user.is_authenticated:
         if request.method == 'POST':
-            pass
+            return redirect(home)
         else:
-            user = request.user
-            coupen = Coupen.objects.get(user=user)
-            context = {'coupen':coupen}
-            return render(request,'user/viewcoupen.html',context)
+            user = request.user 
+            if Coupen.objects.filter(user=user).exists():
+                coupon = Coupen.objects.get(user=user)
+                if date.today() >= coupon.start:
+                    if date.today() > coupon.end:
+                        return render(request,'user/viewcoupen.html')
+                context = {'coupen':coupon}
+                return render(request,'user/viewcoupen.html',context)
+            else:
+                return render(request,'user/viewcoupen.html')
     else:
         return redirect(home)
 
@@ -284,6 +380,7 @@ def check_coupen(request):
                 if coupen.code == check_code:
                     coupen.used = True
                     coupen.save()
+                    request.session['coupon'] = check_code
                     return JsonResponse('true',safe=False) 
                 else:
                     return JsonResponse('false',safe=False)
@@ -298,8 +395,13 @@ def check_coupen(request):
 def history(request):
     if request.user.is_authenticated:
         user = request.user
+        roompic = RoomPic.objects.all()
         book = BookRoom.objects.filter(user=user)
-        return render(request,'user/history.html', {'booking':book})
+        for x in book:
+            if date.today() > x.check_out:
+                x.checked_out = True
+                x.save()
+        return render(request,'user/history.html', {'booking':book,'roompics':roompic})
     else:
         return redirect(home)
 
@@ -331,19 +433,39 @@ def filter(request):
         amenity_list = []
         categoryf = request.POST['category']
         amenity_listf = request.POST.getlist('amenities[]')
+        check_in = request.POST['check_in']
         roomf = int(request.POST['room'])
         room = RoomOverView.objects.get(category=categoryf)
+        userbook = BookRoom.objects.filter(room=room,check_in=check_in)
+        no_rooms = 0
+        for x in userbook:
+            if x.block == False:
+                no_rooms += x.no_of_room
+        receptionbook = ReceptionBook.objects.filter(room=room,check_in=check_in)
+        for x in receptionbook:
+            no_rooms += x.no_of_room
+        available = room.rooms - no_rooms
         for x in setamenities:
             if x.room == room:
                 amenity_list.append(x.amenities.amenities)
-        print(amenity_list)
-        print(amenity_listf)
-        print(type(room.available))
-        print(type(roomf))
-        if amenity_listf in amenity_list or room.available >= roomf:
-            print('success')
-            request.session['room_category'] = categoryf
-            return JsonResponse('true',safe=False)
+        exist = False
+        for x in amenity_listf:
+            exist = True
+        for x in amenity_listf:
+            if x in amenity_list:
+                flag = True
+            else:
+                flag = False
+        if available >= roomf: 
+            if exist == True:
+                if flag == True:
+                    request.session['room_category'] = categoryf
+                    return JsonResponse('true',safe=False)
+                else:
+                    return JsonResponse('amenity',safe=False)
+            else:
+                request.session['room_category'] = categoryf
+                return JsonResponse('true',safe=False)
         else:
             return JsonResponse('false',safe=False)
     else:
@@ -351,7 +473,8 @@ def filter(request):
             category1 = request.session['room_category']
             category = Category.objects.get(id = category1)
             room = RoomOverView.objects.get(category=category1)
-            context = {'room':room,'category':category,'amenities':amenities,'setamenities':setamenities}
+            roompic = RoomPic.objects.filter(room=room)
+            context = {'room':room,'category':category,'amenities':amenities,'setamenities':setamenities,'roompics':roompic}
             return render(request, 'user/filter.html', context)
         else:
             return redirect('/')
@@ -362,9 +485,5 @@ def logout(request):
         return redirect(home)
     else:
         return redirect(home)
-
-def crop(request):
-    
-    return render(requests,'crop.html')
 
         

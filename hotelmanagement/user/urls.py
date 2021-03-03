@@ -15,5 +15,6 @@ urlpatterns = [
     path('checkcoupen/',views.check_coupen,name = 'checkcoupen'),
     path('addreview/<int:id>',views.add_review,name='addreview'),
     path('logout/',views.logout, name='logout'),
-    path('crop/',views.crop,name='crop'),
+    path('book/',views.book_room, name='bookroom')
+    # path('crop/',views.crop,name='crop'),
 ]

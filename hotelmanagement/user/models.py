@@ -12,6 +12,15 @@ class Details(models.Model):
     phone = models.BigIntegerField()
     Id_proof = models.ImageField(null='True',upload_to='pics')
 
+    @property
+    def ImageURL(self):
+        try:
+            url= self.Id_proof.url
+        except:
+            url=''
+        return url
+
+
 class BookRoom(models.Model):
     user = models.ForeignKey(User,on_delete=models.CASCADE)
     room = models.ForeignKey(RoomOverView,on_delete=models.CASCADE)

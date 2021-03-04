@@ -156,7 +156,7 @@ body {
             $('#span').html('<h6>Enter a valid last name</h6>')
         }else if (atposition<1 || dotposition<atposition+2 || dotposition+2>=email.length){ 
             $('#span').html('<h6>Enter a valid email id</h6>')
-        }else if(isNaN(phone)||phone.length!=10||phone.length<1){
+        }else if(isNaN(phone)||phone.length!=10){
             $('#span').html('<h6>Enter a valid phone number</h6>')
         }else if(password1<4){
             $('#span').html('<h6>Enter a valid password</h6>')

@@ -3306,7 +3306,7 @@ input[type="button"].btn-block {
   border-color: rgba(0, 0, 0, 0.1); }
 
 .navbar-light .navbar-toggler-icon {
-  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='30' height='30' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(0, 0, 0, 0.5)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e"); }
+  background-image: url("http://assets.stickpng.com/images/588a64d2d06f6719692a2d0e.png"); }
 
 .navbar-light .navbar-text {
   color: rgba(0, 0, 0, 0.5); }
@@ -4805,7 +4805,7 @@ button.bg-danger:focus {
   background-color: #bd2130 !important; }
 
 .bg-light {
-  background-color: #f8f9fa !important; }
+  background-color: #1d1d1d !important; }
 
 a.bg-light:hover, a.bg-light:focus,
 button.bg-light:hover,
@@ -9784,7 +9784,7 @@ h3.title-big {
     .w3l-header-nav .navbar-collapse {
       max-height: calc(100vh - 100px);
       overflow: auto;
-      background: #f6f6f6;
+      background: #1d1d1d;
       border-radius: 10px;
       padding: 15px 5px 25px; } }
 

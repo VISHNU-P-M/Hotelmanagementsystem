@@ -328,7 +328,8 @@ def book_room(request):
                 room_no.append(number)
             if Coupen.objects.filter(user=user).exists():
                 if request.session.has_key('coupon'):
-                    coupon = Coupen.objects.get(user=user)
+                    code = request.session['coupon']
+                    coupon = Coupen.objects.get(code=code,user=user)
                     discount = int(coupon.percent)
                     discount_price = price - (price*(discount/100))
                     paypal_price = discount_price/70
@@ -337,13 +338,10 @@ def book_room(request):
                     context = {'check_in':check_in,'check_out':check_out,'room':room,'room_no':room_no,'price':discount_price,'paypal_price':paypal_price,'razorpay_price':razorpay_price}
                     return render(request,'user/book.html',context)
                 else:
-                    coupon = Coupen.objects.get(user=user)
-                    if coupon.used == False:
-                        context = {'check_in':check_in,'check_out':check_out,'room':room,'room_no':room_no,'price':price,'coupon':coupon,'coupen_exist':True,'paypal_price':paypal_price,'razorpay_price':razorpay_price}
-                        return render(request,'user/book.html',context)
-                    else:
-                        context = {'check_in':check_in,'check_out':check_out,'room':room,'room_no':room_no,'price':price,'paypal_price':paypal_price,'razorpay_price':razorpay_price}
-                        return render(request,'user/book.html',context)
+                    coupon = Coupen.objects.filter(user=user)
+                    context = {'check_in':check_in,'check_out':check_out,'room':room,'room_no':room_no,'price':price,'coupon':coupon,'coupen_exist':True,'paypal_price':paypal_price,'razorpay_price':razorpay_price}
+                    return render(request,'user/book.html',context)
+                   
             else:
                 context = {'check_in':check_in,'check_out':check_out,'room':room,'room_no':room_no,'price':price,'paypal_price':paypal_price,'razorpay_price':razorpay_price}
                 return render(request,'user/book.html',context)
@@ -358,11 +356,8 @@ def view_coupen(request):
         else:
             user = request.user 
             if Coupen.objects.filter(user=user).exists():
-                coupon = Coupen.objects.get(user=user)
-                if date.today() >= coupon.start:
-                    if date.today() > coupon.end:
-                        return render(request,'user/viewcoupen.html')
-                context = {'coupen':coupon}
+                coupon = Coupen.objects.filter(user=user,end__gt=date.today())
+                context = {'coupons':coupon}
                 return render(request,'user/viewcoupen.html',context)
             else:
                 return render(request,'user/viewcoupen.html')
@@ -374,18 +369,21 @@ def check_coupen(request):
         if request.method == 'POST':
             check_code = request.POST['check_code']
             user = request.user
-            coupen = Coupen.objects.get(user=user)
-            print(check_code)
-            if coupen.used == False:
-                if coupen.code == check_code:
-                    coupen.used = True
-                    coupen.save()
-                    request.session['coupon'] = check_code
-                    return JsonResponse('true',safe=False) 
+            if Coupen.objects.filter(code=check_code,user=user).exists():
+                coupon = Coupen.objects.get(code=check_code,user=user)
+                if coupon.start <= date.today() and coupon.end >= date.today():
+                    if coupon.used == False:
+                        coupon.used = True
+                        coupon.save()
+                        request.session['coupon'] = check_code
+                        return JsonResponse('true',safe=False) 
+                    else:
+                        return JsonResponse('used',safe=False)
                 else:
-                    return JsonResponse('false',safe=False)
+                    return JsonResponse('date',safe=False) 
             else:
-                return JsonResponse('used',safe=False)
+                return JsonResponse('false',safe=False)
+            
         else:
             return redirect(home)
     else:

@@ -750,8 +750,9 @@ def view_offer(request):
     if request.session.has_key('password'):
         offer = Offer.objects.all()
         if Coupen.objects.exists():
-            coupen = Coupen.objects.all()[0]
-            context = {'offers':offer,'coupen':coupen,'coupen_exist':True}
+            user = User.objects.filter().first()
+            coupen = Coupen.objects.filter(user=user)
+            context = {'offers':offer,'coupens':coupen,'coupen_exist':True}
         else:
             context = {'offers':offer}
         return render(request,'admin/viewoffer.html',context)
@@ -792,11 +793,13 @@ def add_coupen(request):
             percent = request.POST['percent']
             from_date = request.POST['from_date']
             to_date = request.POST['to_date']
-            print(coupen_name,coupen_code,percent,from_date,to_date)
             users = User.objects.all()
-            for x in users:
-                Coupen.objects.create(user=x,code=coupen_code,coupen_name=coupen_name,percent=percent,start=from_date,end=to_date)
-            return JsonResponse('true',safe=False)
+            if Coupen.objects.filter(code=coupen_code).exists():
+                return JsonResponse('exist',safe=False)
+            else:
+                for x in users:
+                    Coupen.objects.create(user=x,code=coupen_code,coupen_name=coupen_name,percent=percent,start=from_date,end=to_date)
+                return JsonResponse('true',safe=False)
         else:
             return render(request,'admin/addcoupen.html')
     else:

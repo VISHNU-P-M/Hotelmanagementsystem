@@ -77,6 +77,7 @@
                 </tr>
                 </thead>
                 <tbody>
+                    {% for coupen in coupens %}
                 <tr>
                     <th style="color: black;" scope="row">{{coupen.id}}</th> 
                     <td style="color: black;"> {{coupen.coupen_name}} </td>
@@ -87,6 +88,7 @@
                     <td style="color: black;"> {{coupen.live}} </td>
                     <td ><a href='/admin/deletecoupen/' style="text-decoration: none;color:red; "><i class="fa fa-trash" aria-hidden="true"></i><span>delete</span></a></td>
                 </tr>
+                {% endfor %}
                 </tbody>
             </table>
             {% endif %}

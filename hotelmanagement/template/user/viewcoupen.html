@@ -227,14 +227,14 @@
               
               <div class="collapse navbar-collapse ml-auto" id="navbarSupportedContent">
                   <ul class="navbar-nav ml-auto">
-                  <li class="nav-item active my-auto">
-                      <a class="nav-link" style="color: #d63447;  margin-left: 3rem; font-size: 20px;margin-top: auto;" href="/">Home <span class="sr-only">(current)</span></a>
-                  </li>
-                  <li class="nav-item my-auto">
-                      <a class="nav-link" style="color: #d63447;  margin-left: 3rem; font-size: 20px;margin-top: auto;" href='/logout/'>Log-out</a>
+                    <li class="nav-item active my-auto">
+                      <a class="nav-link" style="color: #d63447;  margin-left: 3rem; font-size: 20px;margin-top: auto;" href="/"><i class="fa fa-home" aria-hidden="true" ></i><span class="sr-only">(current)</span></a>
                   </li>
                   <li class="nav-item">
-                    <a class="nav-link" style="color: #d63447;  margin-left: 3rem; font-size: 20px;margin-top: auto;" href="/history/">Booking History</a>
+                    <a class="nav-link" style="color: #d63447;  margin-left: 3rem; font-size: 20px;margin-top: auto;" href="/history/"><i class="fa fa-history" aria-hidden="true"></i></a>
+                  </li>
+                  <li class="nav-item my-auto">
+                      <a class="nav-link" style="color: #d63447;  margin-left: 3rem; font-size: 20px;margin-top: auto;" href='/logout/'><i class="fa fa-power-off" aria-hidden="true"></i></a>
                   </li>
                   </ul>
               </div>
@@ -243,9 +243,9 @@
     </header>
     <section class="container">
         <h1>Coupons</h1>
+        {% for coupen in coupons %}
           <div class="row">
             {% if coupen.used == False %}
-              {% if coupen.live == True %}
               <article class="card fl-left">
               <section class="date">
                   <time datetime="23th feb">
@@ -254,7 +254,7 @@
               </section>
                 <section class="card-cont">
                   <small>Live Hotel</small>
-                  <h3>{{coupen.coupen_name}}</h3>
+                  <h4>{{coupen.coupen_name}}</h4>
                   <div class="even-date">
                       <i class="fa fa-money" aria-hidden="true"></i>
                   <time>
@@ -272,7 +272,7 @@
                 </section>
               </article>
               {% endif %}
-            {% endif %}
+          {% endfor %}
           </div>
   
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW" crossorigin="anonymous"></script>

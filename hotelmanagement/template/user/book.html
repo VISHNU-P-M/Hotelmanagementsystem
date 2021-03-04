@@ -172,18 +172,18 @@
               
               <div class="collapse navbar-collapse ml-auto" id="navbarSupportedContent">
                   <ul class="navbar-nav ml-auto">
-                  <li class="nav-item active my-auto">
-                      <a class="nav-link" style="color: #d63447;  margin-left: 3rem; font-size: 20px;margin-top: auto;" href="/">Home <span class="sr-only">(current)</span></a>
-                  </li>
-                  <li class="nav-item my-auto">
-                      <a class="nav-link" style="color: #d63447;  margin-left: 3rem; font-size: 20px;margin-top: auto;" href='/logout/'>Log-out</a>
-                  </li>
-                  <li class="nav-item">
-                    <a class="nav-link" style="color: #d63447;  margin-left: 3rem; font-size: 20px;margin-top: auto;" href="/history/">Booking History</a>
-                  </li>
-                  <li class="nav-item">
-                    <a class="nav-link" style="color: #d63447;  margin-left: 3rem; font-size: 20px;margin-top: auto;" href="/coupen/"><i class="fa fa-money" aria-hidden="true"></i></a>
-                  </li>
+                    <li class="nav-item active my-auto">
+                        <a class="nav-link" style="color: #d63447;  margin-left: 3rem; font-size: 20px;margin-top: auto;" href="/"><i class="fa fa-home" aria-hidden="true" ></i><span class="sr-only">(current)</span></a>
+                    </li>
+                    <li class="nav-item">
+                      <a class="nav-link" style="color: #d63447;  margin-left: 3rem; font-size: 20px;margin-top: auto;" href="/coupen/"><i class="fa fa-money" aria-hidden="true"></i></a>
+                    </li>
+                    <li class="nav-item">
+                      <a class="nav-link" style="color: #d63447;  margin-left: 3rem; font-size: 20px;margin-top: auto;" href="/history/"><i class="fa fa-history" aria-hidden="true"></i></a>
+                    </li>
+                    <li class="nav-item my-auto">
+                        <a class="nav-link" style="color: #d63447;  margin-left: 3rem; font-size: 20px;margin-top: auto;" href='/logout/'><i class="fa fa-power-off" aria-hidden="true"></i></a>
+                    </li>
                   </ul>
               </div>
           </nav>
@@ -257,7 +257,6 @@
                                             <div>
                                                 <span id="span" style="color: red;"></span>
                                                 {% if coupen_exist == True %}
-                                                {% if coupon.live == True %}
                                                   <div class="form-group" onclick="coupen()" ><br>
                                                     <label for="exampleInputEmail1">Apply Coupen</label><i class="fa fa-angle-double-down" aria-hidden="true"></i>
                                                   </div>
@@ -267,7 +266,6 @@
                                                   </div>
                                                   
                                                   <br>
-                                                  {% endif %}
                                                 {% endif %}
                                               </div>
                                             <br><br>
@@ -296,7 +294,7 @@
             var price = '{{price}}'
             var room_id = '{{room.id}}'
             var method = $('#method').val()
-            var data = {
+            var userdata = {
                 'csrfmiddlewaretoken':'{{csrf_token}}',
                 'room_id':room_id,
                 'price':price,
@@ -310,7 +308,7 @@
                     $.ajax({
                         url:'/book/',
                         method:'POST',
-                        data:data,
+                        data:userdata,
                         dataTypes:'json',
                         success:function(data){
                             if (data=='true'){
@@ -326,8 +324,8 @@
                     })
                 }else if(method=='paypal'){
                     console.log('paypal')
-                    var price = '{{paypal_price}}'
-                    var total = parseInt(price)
+                    var price = parseInt('{{paypal_price}}')
+                    //var total = parseInt(price)
                     // Render the PayPal button into #paypal-button-container
                     paypal.Buttons({
                         
@@ -343,7 +341,7 @@
                             return actions.order.create({
                             purchase_units: [{
                                 amount: {
-                                    value: total
+                                    value: parseInt('{{paypal_price}}')
                                 }
                                 }]
                             });
@@ -356,7 +354,7 @@
                                 $.ajax({
                                     url:'/book/',
                                     method:'POST',
-                                    data:data,
+                                    data:userdata,
                                     dataTypes:'json',
                                     success:function(data){
                                         if (data=='true'){
@@ -378,6 +376,7 @@
                     razorpay()
                 }else{
                     console.log('something wrong')
+                    alert('something went wrong')
                 }
             }
         })
@@ -469,6 +468,9 @@
                     if(data=='used'){
                         $('#span').html('Code is Used')
                     }
+                    if(data=='date'){
+                        $('#span').html('Coupon not valid')
+                    }
                     }
                 })
             }
@@ -476,12 +478,11 @@
     
         })
 
-        function razorpay(){    
-            var price = '{{razorpay_price}}'
+        function razorpay(){
             var payment_status = 'razorpay'
             var options = {
                 "key": "rzp_test_0CJlFTJsvWeMla", // Enter the Key ID generated from the Dashboard
-                "amount": price, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+                "amount": '{{razorpay_price}}', // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
                 "currency": "INR",
                 "name": "Live Hotel",
                 "description": "Room booking",

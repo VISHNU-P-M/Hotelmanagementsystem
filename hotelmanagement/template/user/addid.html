@@ -71,6 +71,10 @@
                     <span id="span" style="color: red;"></span>
                     <input type="submit" name="" id="sub" value="Submit" required>
                 </form>
+                <div style="color: red;">
+                {% for message in messages %}
+                {{message}}!
+                {% endfor %}
             </div>
         </div>
     </section>

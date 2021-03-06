@@ -23,6 +23,7 @@ def login(request):
                 return JsonResponse('false',safe=False)
         else:
             return render(request,'reception/receptionlogin.html')
+
 def receptionhome(request):
     if request.session.has_key('password'):
         room = RoomOverView.objects.all()
@@ -80,6 +81,7 @@ def roomstatus(request):
                 return render(request,'reception/roomstatus.html',context)
     else:
         return redirect(login)
+        
 def specific_room(request,id):
     if request.session.has_key('password'):
         if request.method=='POST':

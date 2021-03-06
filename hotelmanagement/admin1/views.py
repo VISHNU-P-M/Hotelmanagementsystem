@@ -3,7 +3,12 @@ from django.http import JsonResponse
 from django.contrib.auth.models import auth,User  
 from user.models import *
 from .models import *
+
+
+# for importing image files
 from django.core.files import File
+
+
 from django.contrib import messages
 from django.template import loader, Template
 import ast
@@ -12,6 +17,8 @@ from datetime import date
 from reception.models import *
 from django.db.models import Avg, Count, Sum
 from datetime import datetime , date, timedelta
+
+#for convert base64 to imagefile
 import base64
 from django.core.files.base import ContentFile
 
@@ -61,6 +68,9 @@ def adminhome(request):
         for x in rec_book:
             sales2 = sales2 + int(x.price)
         sales = sales1 + sales2
+
+        #year wise sale calculations
+
         y01 = datetime.now().year
         y02 = y01-1
         y03 = y02-1
@@ -101,6 +111,9 @@ def adminhome(request):
             salesy4 = salesy4 + x.price
         for x in recbook5:
             salesy5 = salesy5 + x.price
+
+        #month wise sale calcuations
+
         m1 = datetime.now().month
         m2 = m1-1
         m3 = m2-1
@@ -141,7 +154,10 @@ def adminhome(request):
             salesm4 = salesm4 + x.price
         for x in booky5:
             salesm5 = salesm5 + x.price
-        print(salesm1,salesm2,salesm3,salesm4,salesm5)
+        
+        #daily sales calcuations
+
+
         d1 = date.today()
         d2 = d1-timedelta(days=1)
         d3 = d2-timedelta(days=1)
@@ -389,12 +405,16 @@ def blockuser(request,id):
         return redirect(viewuser)
     else:
         return redirect(login)
+
+
 def viewreceptionist(request):
     if request.session.has_key('password'):
         reception = Receptionist.objects.all()
         return render(request,'admin/viewreceptionist.html',{'reception':reception})
     else:
         return redirect(login)
+
+
 def editreceptionist(request,id):
     if request.session.has_key('password'):
         if request.method=='POST':
@@ -425,6 +445,7 @@ def addreceptionist(request):
             return render(request,'admin/addreceptionist.html')
     else:
         return redirect(login)
+
 def deletereceptionist(request,id):
     if request.session.has_key('password'):
         user = Receptionist.objects.get(id=id)
@@ -432,6 +453,7 @@ def deletereceptionist(request,id):
         return redirect(viewreceptionist)
     else:
         return redirect(login)
+
 def viewrooms(request):
     if request.session.has_key('password'):
         room = RoomOverView.objects.all()
@@ -622,7 +644,8 @@ def deletecategory(request,id):
         return redirect(categories)
     else:
         return redirect(login)
-def amenities1(request):
+
+def amenities(request):
     if request.session.has_key('password'):
         amenity = Amenities.objects.all()
         return render(request,'admin/amenities.html',{'amenities':amenity})
@@ -643,6 +666,7 @@ def addamenities(request):
             return render(request,'admin/addamenities.html')
     else:
         return redirect(login)
+
 def deleteamenities(request,id):
     if request.session.has_key('password'):
         amen = Amenities.objects.get(id=id)
@@ -650,6 +674,7 @@ def deleteamenities(request,id):
         return redirect(amenities1)
     else:
         return redirect(login)
+
 def bookings(request):
     if request.session.has_key('password'):
         book = BookRoom.objects.all()
@@ -667,6 +692,7 @@ def blockbook(request,id):
         return redirect(bookings)
     else:
         return redirect(login)
+
 def deletebook(request,id):
     if request.session.has_key('password'):
         book = BookRoom.objects.get(id=id)
@@ -686,8 +712,6 @@ def reception_book(request):
         return render(request,'admin/receptionbook.html',contex)
     else:
         return redirect(login)
-def editbooking(request):
-    pass
 
 
 def reports(request):
@@ -707,6 +731,7 @@ def reports(request):
             return render(request,'admin/report.html',{'user_book':book,'reception_book':rec_book}) 
     else:
         return redirect(login)
+
 def datereport(request):
     if request.session.has_key('password'):
         if request.method == 'POST':
@@ -756,6 +781,7 @@ def view_offer(request):
         else:
             context = {'offers':offer}
         return render(request,'admin/viewoffer.html',context)
+
 def add_offer(request):
     if request.session.has_key('password'):
         if request.method=='POST':
@@ -804,6 +830,7 @@ def add_coupen(request):
             return render(request,'admin/addcoupen.html')
     else:
         return redirect(login)
+        
 def delete_coupen(request):
     if request.session.has_key('password'):
         users = User.objects.all()

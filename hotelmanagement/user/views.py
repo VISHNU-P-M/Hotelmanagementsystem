@@ -41,7 +41,6 @@ def login(request):
             if user is not None:
                 details = Details.objects.get(user=user)
                 if details.Id_proof=='':
-                    print('error')
                     request.session['username']=username
                     return JsonResponse('addid',safe=False)
                 else:
@@ -55,7 +54,7 @@ def login(request):
 
 
     
-
+#send otp to Phone no.
 
 def otp_check(request):
     if request.user.is_authenticated:
@@ -90,6 +89,8 @@ def otp_check(request):
                 
         else:
             return render(request,'user/otp.html')
+
+#varifie the otp
 
 def varification(request):
     if request.user.is_authenticated:
@@ -394,7 +395,7 @@ def check_coupen(request):
     else:
         return redirect(home)
             
-
+# booking history shown to user
 def history(request):
     if request.user.is_authenticated:
         user = request.user

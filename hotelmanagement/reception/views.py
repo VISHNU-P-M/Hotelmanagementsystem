@@ -85,7 +85,6 @@ def roomstatus(request):
 def specific_room(request,id):
     if request.session.has_key('password'):
         if request.method=='POST':
-            print(request.session['username'])
             username = request.session['username']
             receptionist = Receptionist.objects.get(username=username)
             guest_name = request.POST['guest_name']
@@ -140,7 +139,6 @@ def filter(request):
         for x in receptionbook:
             no_room += x.no_of_room
         availabe_room = room.rooms - no_room
-        print(availabe_room)
         for x in setamenities:
             if x.room == room:
                 amenity_list.append(x.amenities.amenities)
@@ -151,7 +149,6 @@ def filter(request):
                 flag = False
         if availabe_room>=roomf:
             if flag==True:
-                print('success')
                 request.session['room_category'] = categoryf
                 return JsonResponse('true',safe=False)
             else:

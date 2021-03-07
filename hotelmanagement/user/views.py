@@ -78,7 +78,6 @@ def otp_check(request):
                 }
 
                 response = requests.request("POST", url, headers=headers, data = payload, files = files)
-                print(response.text.encode('utf8'))
                 data = response.text.encode('utf8')
                 dict=json.loads(data.decode('utf8'))
                 otp_id = dict["otp_id"]
@@ -113,8 +112,6 @@ def varification(request):
             }
 
             response = requests.request("POST", url, headers=headers, data = payload, files = files)
-            
-            print(response.text.encode('utf8'))
             data = response.text.encode('utf8')
             dict=json.loads(data.decode('utf8'))
             status=dict['status']
@@ -166,7 +163,6 @@ def add_id_proof(request):
             user = User.objects.get(username=username)
             details = Details.objects.get(user=user)
             id_proof = request.FILES.get('id_pic')
-            print(id_proof)
             details.Id_proof=id_proof
             details.save()
             if details.ImageURL=='':
@@ -328,7 +324,6 @@ def book_room(request):
                 room_no.append(number)
                 for i in range(1,no_of_room):
                     number += 1
-                    print(number) 
                     room_no.append(number)
                 if Coupen.objects.filter(user=user).exists():
                     if request.session.has_key('coupon'):
@@ -413,8 +408,7 @@ def history(request):
 def add_review(request,id):
     if request.user.is_authenticated:
         if request.method == 'POST':
-            if Review.objects.filter(book=id).exists():   
-                print('already exist')
+            if Review.objects.filter(book=id).exists():
                 return JsonResponse('exist',safe=False)
             else:
                 book = BookRoom.objects.get(id=id)

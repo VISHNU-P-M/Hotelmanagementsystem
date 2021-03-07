@@ -311,7 +311,6 @@ def adminhome(request):
             sq8 = sq8 + x.price
         for x in book9:
             sq9 = sq9 + x.price
-        print(sq1,sq2,sq3,sq4,sq5,sq6,sq7,sq8,sq9)
         context = {'count_user':user,'available':available,'total_room':total,'count_book':book,'sales':sales,'y1':salesy1,'y2':salesy2,'y3':salesy3,'y4':salesy4,'y5':salesy5,'year1':y01,'year2':y02,'year3':y03,'year4':y04,'year5':y05,'m1':salesm1,'m2':salesm2,'m3':salesm3,'m4':salesm4,'m5':salesm5,'month1':m1,'month2':m2,'month3':m3,'month4':m4,'month5':m5,
         'd1':salesd1,'d2':salesd2,'d3':salesd3,'d4':salesd4,'d5':salesd5,'d6':salesd6,'d7':salesd7,'d8':salesd8,'d9':salesd9,'d10':salesd10,'date1':d1,'date2':d2,'date3':d3,'date4':d4,'date5':d5,'date6':d6,'date7':d7,'date8':d8,'date9':d9,'date10':d10,'q1':sq1,'q2':sq2,'q3':sq3,'q4':sq4,'q5':sq5,'q6':sq6,'q7':sq7,'q8':sq8,'q9':sq9,
         'Q1':q1,'Q2':q2,'Q3':q3,'Q4':q4,'Q5':q5,'Q6':q6,'Q7':q7,'Q8':q8,'Q9':q9} 
@@ -560,7 +559,6 @@ def edit_over_view(request,id):
   
 def delete_over_view(request,id):
     if request.session.has_key('password'):
-        print(id)
         room = RoomOverView.objects.get(id=id)
         amenities = AmenitiesList.objects.filter(room=room)
         amenities.delete()

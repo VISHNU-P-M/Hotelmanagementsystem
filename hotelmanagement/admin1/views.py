@@ -659,7 +659,7 @@ def addamenities(request):
                 return redirect(addamenities)
             else:
                 Amenities.objects.create(amenities=ameneties)
-                return redirect(amenities1)
+                return redirect(amenities)
         else:
             return render(request,'admin/addamenities.html')
     else:
@@ -669,7 +669,7 @@ def deleteamenities(request,id):
     if request.session.has_key('password'):
         amen = Amenities.objects.get(id=id)
         amen.delete()
-        return redirect(amenities1)
+        return redirect(amenities)
     else:
         return redirect(login)
 

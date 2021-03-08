@@ -12,31 +12,31 @@ from django.core.files import File
 from datetime import date,datetime,timedelta
 # Create your views here.
 def home(request):
-    if Offer.objects.exists():
-        offer = Offer.objects.all()
-        for x in offer:
-            if x.is_started==True:
-                x.start=True
-                x.save()
-            if x.is_valid == True:
-                x.start=False
-                x.save()
-        room = RoomOverView.objects.all()
-        category = Category.objects.all()
-        amenities = Amenities.objects.all()
-        setamenities = AmenitiesList.objects.all()
-        offer = Offer.objects.all()
-        roompics = RoomPic.objects.all()
-        contex = {'rooms':room,'categories':category,'amenities':amenities,'setamenities':setamenities,'offers':offer,'roompics':roompics}
-        return render(request,'user/index.html',contex)
-    else:
-        room = RoomOverView.objects.all()
-        category = Category.objects.all()
-        amenities = Amenities.objects.all()
-        setamenities = AmenitiesList.objects.all()
-        roompics = RoomPic.objects.all()
-        contex = {'rooms':room,'categories':category,'amenities':amenities,'setamenities':setamenities,'roompics':roompics}
-        return render(request,'user/index.html',contex)
+    # if Offer.objects.exists():
+    #     offer = Offer.objects.all()
+    #     for x in offer:
+    #         if x.is_started==True:
+    #             x.start=True
+    #             x.save()
+    #         if x.is_valid == True:
+    #             x.start=False
+    #             x.save()
+    #     room = RoomOverView.objects.all()
+    #     category = Category.objects.all()
+    #     amenities = Amenities.objects.all()
+    #     setamenities = AmenitiesList.objects.all()
+    #     offer = Offer.objects.all()
+    #     roompics = RoomPic.objects.all()
+    #     contex = {'rooms':room,'categories':category,'amenities':amenities,'setamenities':setamenities,'offers':offer,'roompics':roompics}
+    #     return render(request,'user/index.html',contex)
+    # else:
+    room = RoomOverView.objects.all()
+    category = Category.objects.all()
+    amenities = Amenities.objects.all()
+    setamenities = AmenitiesList.objects.all()
+    roompics = RoomPic.objects.all()
+    contex = {'rooms':room,'categories':category,'amenities':amenities,'setamenities':setamenities,'roompics':roompics}
+    return render(request,'user/index.html',contex)
 
     
 def login(request):

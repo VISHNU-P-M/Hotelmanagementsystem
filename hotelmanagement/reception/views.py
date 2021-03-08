@@ -154,7 +154,7 @@ def filter(request):
             else:
                 return JsonResponse('amenity',safe=False)
         else:
-            return JsonResponse('false',safe=False)
+            return JsonResponse('false',safe=False) 
     else:
         if request.session.has_key('room_category'):
             category1 = request.session['room_category']

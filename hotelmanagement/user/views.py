@@ -233,7 +233,7 @@ def specific_room(request,id):
                 contex = {'rooms':room,'amenities':setamenities, 'total':total,'reviews':reviews,'roompics':roompics}
                 return render(request,'user/viewspecificroom.html',contex)
     else:
-        return redirect(home)  
+        return redirect(login)  
 
 def book_room(request):
     if request.user.is_authenticated:
